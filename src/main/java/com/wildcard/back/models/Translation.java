@@ -10,7 +10,8 @@ import java.util.ArrayList;
 @EqualsAndHashCode
 @ToString
 public class Translation {
-    private ArrayList<String> ru;
-    private ArrayList<String> ua;
+    // Todo perhaps excess class
+//    private ArrayList<String> ru;
+//    private ArrayList<String> ua;
 
 }

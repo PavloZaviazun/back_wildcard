@@ -21,12 +21,17 @@ public class User {
     private String login;
     private String password;
     private String email;
+    // TODO Is it in right way?
     private NativeLanguage nativeLang;
+    private boolean isActive;
+    private int roleId;
 
-    public User(String login, String password, String email, NativeLanguage nativeLang) {
+    public User(String login, String password, String email, NativeLanguage nativeLang, boolean isActive, int roleId) {
         this.login = login;
         this.password = password;
         this.email = email;
         this.nativeLang = nativeLang;
+        this.isActive = isActive;
+        this.roleId = roleId;
     }
 }

@@ -1,6 +1,5 @@
 package com.wildcard.back.controller;
 
-import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.dao.VocabularyDAO;
 import com.wildcard.back.models.PartOfSpeech;
 import com.wildcard.back.models.Translation;
@@ -21,7 +20,7 @@ import java.util.List;
 public class MainController {
 
 //    private VocabularyDAO vocabularyDAO;
-    private LibDAO libDAO;
+//    private LibDAO libDAO;
 
 //    @GetMapping("/set")
 //    public void set() throws IOException {
@@ -42,9 +41,9 @@ public class MainController {
         return null;
     }
 
-    @GetMapping("/lib")
-    public List<Vocabulary> getSM() {
-        return libDAO.getLib();
-    }
+//    @GetMapping("/lib")
+//    public List<Vocabulary> getSM() {
+//        return libDAO.getLib();
+//    }
 }
 
