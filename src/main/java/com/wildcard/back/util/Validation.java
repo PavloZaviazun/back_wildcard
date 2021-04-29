@@ -1,5 +1,8 @@
 package com.wildcard.back.util;
 
+import com.wildcard.back.models.PartOfSpeech;
+import com.wildcard.back.models.Word;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,5 +33,33 @@ public class Validation {
             formattedWord.append(Character.toLowerCase(chars[i]));
         }
         return formattedWord.toString();
+    }
+
+    public static String wordValidation(String word) {
+        if(!checkValidation(word, WORD_PATTERN)) {
+            word = firstToTitleCase(word);
+        }
+        if(!checkValidation(word, WORD_PATTERN)) {
+            word = lastsToLowerCase(word);
+        }
+        if(checkValidation(word, WORD_PATTERN)) {
+            return word;
+        }
+        return null;
+    }
+
+    public static PartOfSpeech partOfSpeechValidation(String partOfSpeech) {
+        switch(partOfSpeech.toUpperCase()) {
+            case "NOUN" : return PartOfSpeech.NOUN;
+            case "PRONOUN" : return PartOfSpeech.PRONOUN;
+            case "VERB" : return PartOfSpeech.VERB;
+            case "ADVERB" : return PartOfSpeech.ADVERB;
+            case "ADJECTIVE" : return PartOfSpeech.ADJECTIVE;
+            case "PREPOSITION" : return PartOfSpeech.PREPOSITION;
+            default : {
+                System.out.println("Inappropriate part of speech");
+                return null;
+            }
+        }
     }
 }

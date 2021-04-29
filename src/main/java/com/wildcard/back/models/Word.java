@@ -17,7 +17,7 @@ import java.io.StringWriter;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class Vocabulary {
+public class Word {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class Vocabulary {
     private String image;
     private String translation;
 
-    public Vocabulary(String word, PartOfSpeech partOfSpeech, String description, String example, String image, String translation) throws IOException {
+    public Word(String word, PartOfSpeech partOfSpeech, String description, String example, String image, String translation) throws IOException {
         this.word = word;
         this.partOfSpeech = partOfSpeech;
         this.description = description;

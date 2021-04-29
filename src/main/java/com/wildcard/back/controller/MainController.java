@@ -1,17 +1,11 @@
 package com.wildcard.back.controller;
 
-import com.wildcard.back.dao.VocabularyDAO;
-import com.wildcard.back.models.PartOfSpeech;
-import com.wildcard.back.models.Translation;
-import com.wildcard.back.models.Vocabulary;
+import com.wildcard.back.models.Word;
 import lombok.AllArgsConstructor;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -36,7 +30,7 @@ public class MainController {
 //    }
 
     @GetMapping("/get")
-    public List <Vocabulary> get() {
+    public List <Word> get() {
 //        return vocabularyDAO.findAll();
         return null;
     }
