@@ -23,15 +23,15 @@ public class Vocabulary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String word;
-    private PartOfSpeech part_of_speech;
+    private PartOfSpeech partOfSpeech;
     private String description;
     private String example;
     private String image;
     private String translation;
 
-    public Vocabulary(String word, PartOfSpeech part_of_speech, String description, String example, String image, Translation translation) throws IOException {
+    public Vocabulary(String word, PartOfSpeech partOfSpeech, String description, String example, String image, String translation) throws IOException {
         this.word = word;
-        this.part_of_speech = part_of_speech;
+        this.partOfSpeech = partOfSpeech;
         this.description = description;
         this.example = example;
         this.image = image;
@@ -40,4 +40,5 @@ public class Vocabulary {
         mapper.writeValue(sw, translation);
         this.translation = sw.toString();
     }
+
 }
