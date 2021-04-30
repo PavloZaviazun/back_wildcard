@@ -25,6 +25,7 @@ public class WordController {
 
     @GetMapping("/lib/{id}/words/get")
     public List <Word> getLibWords(@PathVariable int id) {
+        //TODO add to separate service
         Query query = entityManager.createNativeQuery("SELECT word_id FROM word_lib WHERE lib_id = ?");
         query.setParameter(1, id);
         List<Integer> resultList = query.getResultList();
