@@ -23,7 +23,7 @@ public class WordController {
 
     @GetMapping("/word/{id}/get")
     public Word getWord(@PathVariable int id) {
-        return wordDAO.getOne(id);
+        return wordDAO.findById(id).get();
     }
 
     @DeleteMapping("/word/{id}/delete")
@@ -88,18 +88,18 @@ public class WordController {
     }
 
     @PostMapping("/word/add")
-    public void addWord(/*@RequestParam String word,
+    public void addWord(@RequestParam String word,
                               @RequestParam String partOfSpeech,
                               @RequestParam String description,
                               @RequestParam String example,
                               @RequestParam String image,
-                              @RequestParam String translation*/) {
+                              @RequestParam String translation) {
 
-        String word = "Her ";
-        String partOfSpeech = "NOUN";
-        String description = " her, pasha!";
-        String example = "her, g pasha!";
-        String translation = "{\"ru\":\"рус\", \"ua\":\"укр\"}";
+//        String word = "Her ";
+//        String partOfSpeech = "NOUN";
+//        String description = " her, pasha!";
+//        String example = "her, g pasha!";
+//        String translation = "{\"ru\":\"рус\", \"ua\":\"укр\"}";
 
         Word wordObj = new Word();
         String wordRequest = Validation.wordValidation(word);

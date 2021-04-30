@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringWriter;
 
 @Entity
