@@ -23,7 +23,10 @@ public class WordController {
 
     @GetMapping("/word/{id}/get")
     public Word getWord(@PathVariable int id) {
-        return wordDAO.findById(id).get();
+        if(wordDAO.findById(id).isPresent()) {
+            return wordDAO.findById(id).get();
+        }
+        return new Word();
     }
 
     @DeleteMapping("/word/{id}/delete")
