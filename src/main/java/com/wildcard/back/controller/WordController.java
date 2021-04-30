@@ -127,5 +127,9 @@ public class WordController {
         }
     }
 
+    @GetMapping("/words/get")
+    public List<Word> getWords() {
+        return wordDAO.findAll();
+    }
 
 }
