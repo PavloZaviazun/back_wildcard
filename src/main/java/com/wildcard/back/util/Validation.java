@@ -1,7 +1,6 @@
 package com.wildcard.back.util;
 
 import com.wildcard.back.models.PartOfSpeech;
-import com.wildcard.back.models.Word;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,4 +61,23 @@ public class Validation {
             }
         }
     }
+
+    public static String sentenceValidation(String sentence) {
+        if(!checkValidation(sentence, SENTENCE_PATTERN)) {
+            sentence = firstToTitleCase(sentence);
+        }
+        if(checkValidation(sentence, SENTENCE_PATTERN)) {
+            return sentence;
+        }
+        return null;
+    }
+
+    public static String translationValidation(String translation) {
+        if(checkValidation(translation, JSON_PATTERN)) {
+            return translation;
+        }
+        return null;
+    }
+
+
 }

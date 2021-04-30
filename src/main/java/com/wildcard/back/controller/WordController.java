@@ -40,19 +40,51 @@ public class WordController {
                            @RequestParam String image,
                            @RequestParam String translation) {
         Word wordObj = wordDAO.getOne(id);
+        boolean wasUpdated = false;
 
         if(!wordObj.getWord().equals(word)) {
-            if(Validation.wordValidation(word) != null) wordObj.setWord(word);
+            String wordRequest = Validation.wordValidation(word);
+            if(wordRequest != null) {
+                wordObj.setWord(wordRequest);
+                wasUpdated = true;
+            }
         }
+
         if(!wordObj.getPartOfSpeech().equals(PartOfSpeech.valueOf(partOfSpeech))) {
-            PartOfSpeech value = Validation.partOfSpeechValidation(partOfSpeech.toUpperCase());
-            if(value != null) wordObj.setPartOfSpeech(value);
+            PartOfSpeech partOfSpeechRequest = Validation.partOfSpeechValidation(partOfSpeech.toUpperCase());
+            if(partOfSpeechRequest != null) {
+                wordObj.setPartOfSpeech(partOfSpeechRequest);
+                wasUpdated = true;
+            }
         }
 
+        if(!wordObj.getDescription().equals(description)) {
+            String descriptionRequest = Validation.sentenceValidation(description);
+            if(descriptionRequest != null) {
+                wordObj.setDescription(descriptionRequest);
+                wasUpdated = true;
+            }
+        }
 
+        if(!wordObj.getExample().equals(example)) {
+            String exampleRequest = Validation.sentenceValidation(example);
+            if(exampleRequest != null) {
+                wordObj.setExample(exampleRequest);
+                wasUpdated = true;
+            }
+        }
 
-        PartOfSpeech value = PartOfSpeech.valueOf(partOfSpeech);
-        if(!wordObj.getPartOfSpeech().equals(value)) wordObj.setWord(word);
+        if(!wordObj.getTranslation().equals(translation)) {
+            String translationRequest = Validation.translationValidation(translation);
+            if(translationRequest != null) {
+                wordObj.setTranslation(translationRequest);
+                wasUpdated = true;
+            }
+        }
+
+        if(wasUpdated) {
+            wordDAO.save(wordObj);
+        }
     }
 
     @PostMapping("/word/add")
@@ -65,35 +97,26 @@ public class WordController {
 
         String word = "Her ";
         String partOfSpeech = "NOUN";
-        String description = "her, pasha!";
+        String description = " her, pasha!";
         String example = "her, g pasha!";
         String translation = "{\"ru\":\"рус\", \"ua\":\"укр\"}";
 
         Word wordObj = new Word();
-        if(Validation.wordValidation(word) != null) wordObj.setWord(word);
+        String wordRequest = Validation.wordValidation(word);
+        if(wordRequest != null) wordObj.setWord(wordRequest);
 
-        PartOfSpeech value = Validation.partOfSpeechValidation(partOfSpeech.toUpperCase());
-        if(value != null) wordObj.setPartOfSpeech(value);
+        PartOfSpeech partOfSpeechRequest = Validation.partOfSpeechValidation(partOfSpeech.toUpperCase());
+        if(partOfSpeechRequest != null) wordObj.setPartOfSpeech(partOfSpeechRequest);
 
+        String descriptionRequest = Validation.sentenceValidation(description);
+        if(descriptionRequest != null) wordObj.setDescription(descriptionRequest);
 
-        if(!Validation.checkValidation(description, Validation.SENTENCE_PATTERN)) {
-            description = Validation.firstToTitleCase(description);
-        }
-        if(Validation.checkValidation(description, Validation.SENTENCE_PATTERN)) {
-            wordObj.setDescription(description);
-        }
+        String exampleRequest = Validation.sentenceValidation(example);
+        if(exampleRequest != null) wordObj.setExample(exampleRequest);
 
-        if(!Validation.checkValidation(example, Validation.SENTENCE_PATTERN)) {
-            example = Validation.firstToTitleCase(example);
-        }
-        if(Validation.checkValidation(example, Validation.SENTENCE_PATTERN)) {
-            wordObj.setExample(example);
-        }
+        String translationRequest = Validation.translationValidation(translation);
+        if(translationRequest != null) wordObj.setTranslation(translationRequest);
 
-        if(Validation.checkValidation(translation, Validation.JSON_PATTERN)) {
-            wordObj.setTranslation(translation);
-        }
-        System.out.println(wordObj);
         if(wordObj.getWord() != null && wordObj.getPartOfSpeech() != null
             && wordObj.getDescription() != null && wordObj.getExample() != null
             && wordObj.getTranslation() != null) {
