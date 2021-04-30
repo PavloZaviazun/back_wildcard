@@ -1,7 +1,5 @@
 package com.wildcard.back.util;
 
-import com.wildcard.back.models.PartOfSpeech;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

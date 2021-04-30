@@ -1,4 +1,4 @@
-package com.wildcard.back.models;
+package com.wildcard.back.util;
 
 public enum PartOfSpeech {
     NOUN, // #0

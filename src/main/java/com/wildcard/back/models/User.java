@@ -1,5 +1,6 @@
 package com.wildcard.back.models;
 
+import com.wildcard.back.util.NativeLanguage;
 import lombok.*;
 
 import javax.persistence.Entity;

@@ -49,8 +49,6 @@ public class LibController {
         }
     }
 
-
-
     @GetMapping("/libs/get")
     public List <Lib> getLibs() {
         return libDAO.findAll();

@@ -1,25 +1,23 @@
 package com.wildcard.back.models;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wildcard.back.util.PartOfSpeech;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
+@ToString(exclude = {"libs"})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"word", "partOfSpeech"})})
 public class Word {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -29,6 +27,12 @@ public class Word {
     private String example;
     private String image;
     private String translation;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "word_lib",
+    joinColumns = @JoinColumn (name = "word_id"),
+    inverseJoinColumns = @JoinColumn (name = "lib_id"))
+    @JsonIgnore
+    private List <Lib> libs;
 
     public Word(String word, PartOfSpeech partOfSpeech, String description, String example, String image, String translation) throws IOException {
         this.word = word;
