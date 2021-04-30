@@ -53,7 +53,7 @@ public class WordController {
             }
         }
 
-        if(!wordObj.getPartOfSpeech().equals(PartOfSpeech.valueOf(partOfSpeech))) {
+        if(!wordObj.getPartOfSpeech().equals(PartOfSpeech.valueOf(partOfSpeech.toUpperCase()))) {
             PartOfSpeech partOfSpeechRequest = Validation.partOfSpeechValidation(partOfSpeech.toUpperCase());
             if(partOfSpeechRequest != null) {
                 wordObj.setPartOfSpeech(partOfSpeechRequest);
