@@ -95,7 +95,7 @@ public class WordController {
         }
 
         if(!wordObj.getTranslation().equals(translation)) {
-            String translationRequest = Validation.translationValidation(translation);
+            String translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
             if(translationRequest != null) {
                 wordObj.setTranslation(translationRequest);
                 wasUpdated = true;
@@ -128,7 +128,7 @@ public class WordController {
         String exampleRequest = Validation.sentenceValidation(example);
         if(exampleRequest != null) wordObj.setExample(exampleRequest);
 
-        String translationRequest = Validation.translationValidation(translation);
+        String translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
         if(translationRequest != null) wordObj.setTranslation(translationRequest);
 
         if(wordObj.getWord() != null && wordObj.getPartOfSpeech() != null

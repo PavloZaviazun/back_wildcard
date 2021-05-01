@@ -22,6 +22,7 @@ public class Word {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String word;
+    @Enumerated(EnumType.STRING)
     private PartOfSpeech partOfSpeech;
     private String description;
     private String example;
