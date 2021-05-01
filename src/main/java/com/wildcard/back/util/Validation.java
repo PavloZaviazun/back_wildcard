@@ -80,5 +80,16 @@ public class Validation {
         return null;
     }
 
+    public static NativeLang nativeLangValidation(String nativeLang) {
+        switch(nativeLang.toUpperCase()) {
+            case "UA" : return NativeLang.UA;
+            case "RU" : return NativeLang.RU;
+            default : {
+                System.out.println("Inappropriate native language");
+                return null;
+            }
+        }
+    }
+
 
 }

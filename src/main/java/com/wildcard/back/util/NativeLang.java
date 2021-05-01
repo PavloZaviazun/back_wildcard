@@ -1,6 +1,6 @@
 package com.wildcard.back.util;
 
-public enum NativeLanguage {
+public enum NativeLang {
     UA, // #1
     RU // #2
 }

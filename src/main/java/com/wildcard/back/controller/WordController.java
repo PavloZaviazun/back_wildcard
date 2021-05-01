@@ -23,6 +23,7 @@ public class WordController {
     private WordDAO wordDAO;
     private EntityManager entityManager;
 
+
     @GetMapping("/lib/{id}/words/get")
     public List <Word> getLibWords(@PathVariable int id) {
         //TODO add to separate service

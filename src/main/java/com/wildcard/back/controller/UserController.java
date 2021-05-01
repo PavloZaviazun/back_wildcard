@@ -3,6 +3,7 @@ package com.wildcard.back.controller;
 import com.wildcard.back.dao.UserDAO;
 import com.wildcard.back.models.User;
 import com.wildcard.back.models.Word;
+import com.wildcard.back.util.NativeLang;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +20,12 @@ public class UserController {
     public void addUser(/*@RequestParam String login,
                         @RequestParam String password,
                         @RequestParam String email,
-                        @RequestParam int nativeLang,
-                        @RequestParam boolean isActive,
+                        @RequestParam String nativeLang,
                         @RequestParam int roleId*/) {
         String login = "help4engineer";
         String password = "996659floreNAA!";
         String email = "help4engineer@gmail.com";
+        String nativeLang = "RU";
 
         User userObj = new User();
         String loginRequest = Validation.oneStepValidation(login, Validation.LOGIN_PATTERN);
@@ -35,6 +36,9 @@ public class UserController {
 
         String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
         if(emailRequest != null) userObj.setEmail(emailRequest);
+
+        NativeLang nativeLangRequest = Validation.nativeLangValidation(nativeLang);
+        if(nativeLangRequest != null) userObj.setNativeLang(nativeLangRequest);
 
         System.out.println(userObj);
 

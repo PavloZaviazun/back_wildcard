@@ -1,12 +1,9 @@
 package com.wildcard.back.models;
 
-import com.wildcard.back.util.NativeLanguage;
+import com.wildcard.back.util.NativeLang;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
@@ -22,17 +19,16 @@ public class User {
     private String login;
     private String password;
     private String email;
-    // TODO Is it in right way?
-    private NativeLanguage nativeLang;
-    private boolean isActive;
+    @Enumerated(EnumType.STRING)
+    private NativeLang nativeLang;
+    private boolean isActive = false;
     private int roleId;
 
-    public User(String login, String password, String email, NativeLanguage nativeLang, boolean isActive, int roleId) {
+    public User(String login, String password, String email, NativeLang nativeLang, int roleId) {
         this.login = login;
         this.password = password;
         this.email = email;
         this.nativeLang = nativeLang;
-        this.isActive = isActive;
         this.roleId = roleId;
     }
 }
