@@ -7,10 +7,10 @@ public class Validation {
 
     public static final String SENTENCE_PATTERN = "[A-Z|0-9](\\w+\\p{Punct}*\\s*)+";
     public static final String WORD_PATTERN = "[A-Z][a-z]+";
-    public static final String JSON_PATTERN = "\\{\\s*\"ru\"\\s*\\:\\s*\"[а-яА-ЯъЪёЁэЭ]*\"\\s*\\,\\s*\"ua\"\\s*\\:\\s*\"[а-яА-ЯїЇєЄ]*\"\\s*\\}";
-    public static final String LOGIN_PATTERN = "\\w{3,30}";
+    public static final String JSON_PATTERN = "\\{\\s*\"ru\"\\s*\\:\\s*\"[а-яА-ЯъЪёЁэЭ]*\"\\s*\\,\\s*\"ua\"\\s*\\:\\s*\"[а-яА-ЯїЇіІєЄ]*\"\\s*\\}";
+    public static final String LOGIN_PATTERN = "[\\w.%+-]{3,30}";
     public static final String PASSWORD_PATTERN = "[\\w\\p{Punct}]{5,30}";
-    public static final String EMAIL_PATTERN = "^[\\w.%+-]*@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+    public static final String EMAIL_PATTERN = "^[\\w.%+-]{3,30}@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
     public static boolean checkValidation(String text, String expression) {
         Pattern pattern = Pattern.compile(expression);

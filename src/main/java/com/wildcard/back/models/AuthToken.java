@@ -2,10 +2,7 @@ package com.wildcard.back.models;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -14,12 +11,14 @@ import java.util.Date;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class Token {
+public class AuthToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String value;
-    private int userId;
+    @Column(unique = true)
+    private String token;
     // TODO change format of Date
     private Date expiration;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private User user;
 }

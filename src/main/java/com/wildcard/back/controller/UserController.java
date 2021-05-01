@@ -2,7 +2,6 @@ package com.wildcard.back.controller;
 
 import com.wildcard.back.dao.UserDAO;
 import com.wildcard.back.models.User;
-import com.wildcard.back.models.Word;
 import com.wildcard.back.util.NativeLang;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
@@ -17,51 +16,94 @@ public class UserController {
     private UserDAO userDAO;
 
     @PostMapping("/user/add")
-    public void addUser(/*@RequestParam String login,
-                        @RequestParam String password,
+    public void addUser(@RequestParam String password,
                         @RequestParam String email,
-                        @RequestParam String nativeLang,
-                        @RequestParam int roleId*/) {
-        String login = "help4engineer";
-        String password = "996659floreNAA!";
-        String email = "help4engineer@gmail.com";
-        String nativeLang = "RU";
-
+                        @RequestParam String nativeLang) {
         User userObj = new User();
-        String loginRequest = Validation.oneStepValidation(login, Validation.LOGIN_PATTERN);
-        if(loginRequest != null) userObj.setLogin(loginRequest);
 
         String passwordRequest = Validation.oneStepValidation(password, Validation.PASSWORD_PATTERN);
         if(passwordRequest != null) userObj.setPassword(passwordRequest);
 
         String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
-        if(emailRequest != null) userObj.setEmail(emailRequest);
+        if(emailRequest != null) {
+            userObj.setEmail(emailRequest);
+            //TODO emails can be different but logins will be the same
+            userObj.setLogin(email.split("@")[0]);
+        }
 
         NativeLang nativeLangRequest = Validation.nativeLangValidation(nativeLang);
         if(nativeLangRequest != null) userObj.setNativeLang(nativeLangRequest);
 
-        System.out.println(userObj);
+        if(userObj.getEmail() != null && userObj.getLogin() != null
+            && userObj.getPassword() != null && userObj.getNativeLang() != null) {
+            userDAO.save(userObj);
+        }
+    }
 
+    @PatchMapping("/user/{id}/update")
+    public void updateUser(@PathVariable int id,
+                           @RequestParam String password,
+                           @RequestParam String email,
+                           @RequestParam String nativeLang,
+                           @RequestParam String login) {
+
+        User userObj = userDAO.getOne(id);
+        boolean wasUpdated = false;
+
+        if(!userObj.getLogin().equals(login)) {
+            String loginRequest = Validation.oneStepValidation(login, Validation.LOGIN_PATTERN);
+            if(loginRequest != null) {
+                userObj.setLogin(loginRequest);
+                wasUpdated = true;
+            }
+        }
+
+        if(!userObj.getPassword().equals(password)) {
+            String passwordRequest = Validation.oneStepValidation(password, Validation.PASSWORD_PATTERN);
+            if(passwordRequest != null) {
+                userObj.setPassword(passwordRequest);
+                wasUpdated = true;
+            }
+        }
+
+        if(!userObj.getEmail().equals(email)) {
+            String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
+            if (emailRequest != null) {
+                userObj.setEmail(emailRequest);
+                wasUpdated = true;
+            }
+        }
+
+        if(!userObj.getNativeLang().equals(NativeLang.valueOf(nativeLang))) {
+            NativeLang nativeLangRequest = Validation.nativeLangValidation(nativeLang);
+            if(nativeLangRequest != null) {
+                userObj.setNativeLang(nativeLangRequest);
+                wasUpdated = true;
+            }
+        }
+
+        if(wasUpdated) {
+            userDAO.save(userObj);
+        }
     }
 
     @GetMapping("/user/{id}/get")
     public User getUser(@PathVariable int id) {
-        return null;
+        if(userDAO.findById(id).isPresent()) {
+            return userDAO.findById(id).get();
+        }
+        return new User();
     }
 
-    @PatchMapping("/user/{id}/update")
-    public void updateUser(@PathVariable int id) {
-
-    }
 
     @DeleteMapping("/user/{id}/delete")
     public void deleteUser(@PathVariable int id) {
-
+        userDAO.deleteById(id);
     }
 
     @GetMapping("/users/get")
     public List <User> getUsers() {
-        return null;
+        return userDAO.findAll();
     }
 
 
