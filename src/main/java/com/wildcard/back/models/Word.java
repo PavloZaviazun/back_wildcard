@@ -29,7 +29,7 @@ public class Word {
     private String image;
     private String translation;
     private boolean isApproved = false;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "word_lib",
     joinColumns = @JoinColumn (name = "word_id"),
     inverseJoinColumns = @JoinColumn (name = "lib_id"))

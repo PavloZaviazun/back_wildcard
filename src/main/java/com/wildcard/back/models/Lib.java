@@ -18,7 +18,7 @@ public class Lib {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "word_lib",
             joinColumns = @JoinColumn (name = "lib_id"),
             inverseJoinColumns = @JoinColumn (name = "word_id"))
