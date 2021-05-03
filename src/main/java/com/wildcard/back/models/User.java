@@ -1,5 +1,6 @@
 package com.wildcard.back.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wildcard.back.util.NativeLang;
 import com.wildcard.back.util.Role;
 import lombok.*;
@@ -13,7 +14,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
+@ToString(exclude = {"libs"})
 @Getter
 @Setter
 public class User {
@@ -33,6 +34,14 @@ public class User {
     private List <Role> role = Arrays.asList(Role.ROLE_USER);
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set <AuthToken> authTokens = new HashSet <>();
+    @ManyToMany
+    @JoinTable(name = "user_lib",
+    joinColumns = @JoinColumn(name = "user"),
+    inverseJoinColumns = @JoinColumn(name = "lib"))
+    @JsonIgnore
+    private List<Lib> libs;
+    @OneToMany(mappedBy = "user")
+    private List<CustomLib> customLibs;
 
     public User(String password, String email, NativeLang nativeLang) {
         this.password = password;

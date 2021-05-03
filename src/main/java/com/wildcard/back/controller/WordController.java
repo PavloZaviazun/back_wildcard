@@ -164,7 +164,6 @@ public class WordController {
         }
     }
 
-
     @PostMapping("/lib/{idLib}/{idWord}/add")
     public void addExistWordToLib(@PathVariable int idLib,
                                   @PathVariable int idWord) {
@@ -178,6 +177,5 @@ public class WordController {
         }
 
     }
-
 
 }

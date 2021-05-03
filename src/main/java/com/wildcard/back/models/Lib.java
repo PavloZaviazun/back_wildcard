@@ -11,19 +11,25 @@ import java.util.List;
 @Setter
 @Getter
 @EqualsAndHashCode
-@ToString(exclude = {"words"})
+@ToString(exclude = {"words", "users"})
 public class Lib {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "word_lib",
             joinColumns = @JoinColumn (name = "lib_id"),
             inverseJoinColumns = @JoinColumn (name = "word_id"))
     @JsonIgnore
     private List <Word> words;
+    @ManyToMany
+    @JoinTable(name = "user_lib",
+    joinColumns = @JoinColumn(name = "lib"),
+    inverseJoinColumns = @JoinColumn(name = "user"))
+    @JsonIgnore
+    private List<User> users;
 
     public Lib(String name) {
         this.name = name;
