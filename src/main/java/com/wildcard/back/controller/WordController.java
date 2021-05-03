@@ -5,6 +5,7 @@ import com.wildcard.back.dao.WordDAO;
 import com.wildcard.back.models.Lib;
 import com.wildcard.back.util.PartOfSpeech;
 import com.wildcard.back.models.Word;
+import com.wildcard.back.util.QueryService;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +27,18 @@ public class WordController {
 
     @GetMapping("/lib/{id}/words/get")
     public List <Word> getLibWords(@PathVariable int id) {
-        //TODO add to separate service
-        Query query = entityManager.createNativeQuery("SELECT word_id FROM word_lib WHERE lib_id = ?");
-        query.setParameter(1, id);
-        List<Integer> resultList = query.getResultList();
+//        //TODO add to separate service
+//        Query query = entityManager.createNativeQuery("SELECT word_id FROM word_lib WHERE lib_id = ?");
+//        query.setParameter(1, id);
+//        List<Integer> resultList = query.getResultList();
+//        List<Word> list = new ArrayList <>();
+//        for(Integer el : resultList) {
+//            if(wordDAO.findById(el).isPresent()) {
+//                list.add(wordDAO.findById(el).get());
+//            }
+//        }
+//        return list;
+        List<Integer> resultList = QueryService.getInstance().selectWordsId(id);
         List<Word> list = new ArrayList <>();
         for(Integer el : resultList) {
             if(wordDAO.findById(el).isPresent()) {

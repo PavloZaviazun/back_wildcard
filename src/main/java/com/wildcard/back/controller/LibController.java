@@ -2,6 +2,7 @@ package com.wildcard.back.controller;
 
 import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.models.Lib;
+import com.wildcard.back.util.QueryService;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +23,19 @@ public class LibController {
 
     @GetMapping("libs/{idWord}")
     public List <Lib> getLibsOfWord(@PathVariable int idWord) {
-        //TODO add to separate service
-        Query query = entityManager.createNativeQuery("SELECT lib_id from word_lib where word_id = ?");
-        query.setParameter(1, idWord);
-        List<Integer> resultList = query.getResultList();
+//        //TODO add to separate service
+//        Query query = entityManager.createNativeQuery("SELECT lib_id from word_lib where word_id = ?");
+//        query.setParameter(1, idWord);
+//        List<Integer> resultList = query.getResultList();
+//        List<Lib> list = new ArrayList <>();
+//        for(Integer el : resultList) {
+//            if(libDAO.findById(el).isPresent()) {
+//                list.add(libDAO.findById(el).get());
+//            }
+//        }
+//        return list;
+
+        List<Integer> resultList = QueryService.getInstance().selectLibsId(idWord);
         List<Lib> list = new ArrayList <>();
         for(Integer el : resultList) {
             if(libDAO.findById(el).isPresent()) {
