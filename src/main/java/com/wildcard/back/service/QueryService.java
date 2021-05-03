@@ -1,7 +1,6 @@
 package com.wildcard.back.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
