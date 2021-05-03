@@ -6,10 +6,7 @@ import com.wildcard.back.util.Role;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -34,14 +31,15 @@ public class User {
     private List <Role> role = Arrays.asList(Role.ROLE_USER);
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set <AuthToken> authTokens = new HashSet <>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<CustomLib> customLibs;
     @ManyToMany
     @JoinTable(name = "user_lib",
     joinColumns = @JoinColumn(name = "user"),
     inverseJoinColumns = @JoinColumn(name = "lib"))
     @JsonIgnore
     private List<Lib> libs;
-    @OneToMany(mappedBy = "user")
-    private List<CustomLib> customLibs;
+
 
     public User(String password, String email, NativeLang nativeLang) {
         this.password = password;

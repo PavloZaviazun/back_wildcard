@@ -5,7 +5,6 @@ import com.wildcard.back.util.PartOfSpeech;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-
 @EnableJpaRepositories
 public interface WordDAO extends JpaRepository<Word, Integer> {
     public Word findByWordAndPartOfSpeech(String word, PartOfSpeech partOfSpeech);

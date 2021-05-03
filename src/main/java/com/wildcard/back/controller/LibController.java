@@ -11,7 +11,6 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
