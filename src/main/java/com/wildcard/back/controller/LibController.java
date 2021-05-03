@@ -2,13 +2,11 @@ package com.wildcard.back.controller;
 
 import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.models.Lib;
-import com.wildcard.back.util.QueryService;
+import com.wildcard.back.service.QueryService;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +16,6 @@ import java.util.List;
 public class LibController {
 
     private LibDAO libDAO;
-    private EntityManager entityManager;
-
 
     @GetMapping("libs/{idWord}")
     public List <Lib> getLibsOfWord(@PathVariable int idWord) {

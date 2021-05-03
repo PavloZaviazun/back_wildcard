@@ -1,18 +1,20 @@
-package com.wildcard.back.util;
+package com.wildcard.back.service;
 
 import lombok.AllArgsConstructor;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
 @AllArgsConstructor
 public class QueryService {
+    @PersistenceContext
     private EntityManager entityManager;
     private static QueryService instance;
 
     private QueryService() {
-        throw new UnsupportedOperationException();
+
     }
 
     public static QueryService getInstance() {

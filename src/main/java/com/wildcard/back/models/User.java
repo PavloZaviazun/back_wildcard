@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wildcard.back.util.NativeLang;
 import com.wildcard.back.util.Role;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.*;
@@ -14,7 +16,7 @@ import java.util.*;
 @ToString(exclude = {"libs"})
 @Getter
 @Setter
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +27,7 @@ public class User {
     private String email;
     @Enumerated(EnumType.STRING)
     private NativeLang nativeLang;
-    private boolean isActive = false;
+    private boolean isEnabled = true;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private List <Role> role = Arrays.asList(Role.ROLE_USER);
@@ -40,10 +42,39 @@ public class User {
     @JsonIgnore
     private List<Lib> libs;
 
-
     public User(String password, String email, NativeLang nativeLang) {
         this.password = password;
         this.email = email;
         this.nativeLang = nativeLang;
+    }
+
+    @Override
+    public Collection <? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return email.split("@")[0];
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

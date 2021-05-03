@@ -5,13 +5,11 @@ import com.wildcard.back.dao.WordDAO;
 import com.wildcard.back.models.Lib;
 import com.wildcard.back.util.PartOfSpeech;
 import com.wildcard.back.models.Word;
-import com.wildcard.back.util.QueryService;
+import com.wildcard.back.service.QueryService;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +20,6 @@ public class WordController {
     private LibDAO libDAO;
 
     private WordDAO wordDAO;
-    private EntityManager entityManager;
-
 
     @GetMapping("/lib/{id}/words/get")
     public List <Word> getLibWords(@PathVariable int id) {
