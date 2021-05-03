@@ -7,6 +7,7 @@ import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,22 +17,11 @@ import java.util.List;
 public class LibController {
 
     private LibDAO libDAO;
+    private EntityManager entityManager;
 
     @GetMapping("libs/{idWord}")
     public List <Lib> getLibsOfWord(@PathVariable int idWord) {
-//        //TODO add to separate service
-//        Query query = entityManager.createNativeQuery("SELECT lib_id from word_lib where word_id = ?");
-//        query.setParameter(1, idWord);
-//        List<Integer> resultList = query.getResultList();
-//        List<Lib> list = new ArrayList <>();
-//        for(Integer el : resultList) {
-//            if(libDAO.findById(el).isPresent()) {
-//                list.add(libDAO.findById(el).get());
-//            }
-//        }
-//        return list;
-
-        List<Integer> resultList = QueryService.getInstance().selectLibsId(idWord);
+        List<Integer> resultList = new QueryService(entityManager).selectLibsId(idWord);
         List<Lib> list = new ArrayList <>();
         for(Integer el : resultList) {
             if(libDAO.findById(el).isPresent()) {

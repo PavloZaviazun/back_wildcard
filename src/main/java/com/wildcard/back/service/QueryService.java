@@ -1,26 +1,15 @@
 package com.wildcard.back.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
 @AllArgsConstructor
 public class QueryService {
-    @PersistenceContext
     private EntityManager entityManager;
-    private static QueryService instance;
-
-    private QueryService() {
-
-    }
-
-    public static QueryService getInstance() {
-        if(instance == null) instance = new QueryService();
-        return instance;
-    }
 
     public List <Integer> selectLibsId(int idWord) {
         Query query = entityManager.createNativeQuery("SELECT lib_id from word_lib where word_id = ?");
