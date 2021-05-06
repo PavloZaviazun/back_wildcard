@@ -23,12 +23,17 @@ public class WordController {
     private EntityManager entityManager;
 
     @GetMapping("/partsOfSpeech/{word}")
-    public List<PartOfSpeech> getPartsOfSpeech(@PathVariable String word) {
+    public String[] getPartsOfSpeech(@PathVariable String word) {
+        List<Word> list = null;
         String wordRequest = Validation.wordValidation(word);
         if(wordRequest != null) {
-            return wordDAO.getPartsOfSpeech(wordRequest);
+            list = wordDAO.findByWord(wordRequest);
         }
-        return new ArrayList <>();
+        String[] array = new String[list.size()];
+        for(int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i).getPartOfSpeech().toString();
+        }
+        return array;
     }
 
     @GetMapping("/lib/{id}/words/get")
