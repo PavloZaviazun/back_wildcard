@@ -22,6 +22,15 @@ public class WordController {
     private WordDAO wordDAO;
     private EntityManager entityManager;
 
+    @GetMapping("/partsOfSpeech/{word}")
+    public List<PartOfSpeech> getPartsOfSpeech(@PathVariable String word) {
+        String wordRequest = Validation.wordValidation(word);
+        if(wordRequest != null) {
+            return wordDAO.getPartsOfSpeech(wordRequest);
+        }
+        return new ArrayList <>();
+    }
+
     @GetMapping("/lib/{id}/words/get")
     public List <Word> getLibWords(@PathVariable int id) {
         List<Integer> resultList = new QueryService(entityManager).selectWordsId(id);
