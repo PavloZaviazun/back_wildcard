@@ -9,6 +9,6 @@ import java.util.List;
 
 @EnableJpaRepositories
 public interface WordDAO extends JpaRepository<Word, Integer> {
-    public Word findByWordAndPartOfSpeech(String word, PartOfSpeech partOfSpeech);
-    public List<Word> findByWord(String word);
+    Word findByWordAndPartOfSpeech(String word, PartOfSpeech partOfSpeech);
+    List<Word> findByWord(String word);
 }
