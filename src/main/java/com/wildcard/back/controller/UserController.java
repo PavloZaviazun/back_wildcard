@@ -11,7 +11,6 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     private UserDAO userDAO;
 
@@ -28,13 +27,13 @@ public class UserController {
         if(emailRequest != null) {
             userObj.setEmail(emailRequest);
             //TODO emails can be different but logins will be the same
-            userObj.setLogin(email.split("@")[0]);
+            userObj.setUsername(email.split("@")[0]);
         }
 
         NativeLang nativeLangRequest = Validation.nativeLangValidation(nativeLang);
         if(nativeLangRequest != null) userObj.setNativeLang(nativeLangRequest);
-
-        if(userObj.getEmail() != null && userObj.getLogin() != null
+        System.out.println(userObj);
+        if(userObj.getEmail() != null && userObj.getUsername() != null
             && userObj.getPassword() != null && userObj.getNativeLang() != null) {
             userDAO.save(userObj);
         }
@@ -50,10 +49,10 @@ public class UserController {
         User userObj = userDAO.getOne(id);
         boolean wasUpdated = false;
 
-        if(!userObj.getLogin().equals(login)) {
+        if(!userObj.getUsername().equals(login)) {
             String loginRequest = Validation.oneStepValidation(login, Validation.LOGIN_PATTERN);
             if(loginRequest != null) {
-                userObj.setLogin(loginRequest);
+                userObj.setUsername(loginRequest);
                 wasUpdated = true;
             }
         }

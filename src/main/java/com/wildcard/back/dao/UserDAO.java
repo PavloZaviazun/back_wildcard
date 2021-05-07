@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories
 public interface UserDAO extends JpaRepository<User, Integer> {
-    User findUserByEmail(String email);
+    User findUserByUsername(String s);
 }
