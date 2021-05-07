@@ -17,6 +17,7 @@ public class Lib {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(unique = true)
     private String name;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "word_lib",
