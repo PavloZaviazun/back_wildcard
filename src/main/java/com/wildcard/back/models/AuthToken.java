@@ -9,8 +9,8 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
+//@EqualsAndHashCode
+//@ToString
 public class AuthToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,7 @@ public class AuthToken {
     @Column(unique = true)
     private String token;
     // TODO change format of Date
-    private Date expiration;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private Date expiration;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private User user;
 }

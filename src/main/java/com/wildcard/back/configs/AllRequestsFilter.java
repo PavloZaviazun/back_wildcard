@@ -33,7 +33,6 @@ public class AllRequestsFilter extends GenericFilter {
                     .getSubject();
             AuthToken authToken = authTokenDAO.findByToken(token);
             User user = authToken.getUser();
-            System.out.println(user);
             if(user != null) {
                 authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
             }

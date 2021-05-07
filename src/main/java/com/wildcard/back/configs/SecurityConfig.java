@@ -37,9 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
-//        PasswordEncoder encoder = new BCryptPasswordEncoder();
-//        String encode = encoder.encode("996659");
-//        System.out.println(encode);
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);
@@ -75,14 +72,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.POST, "/auth").permitAll()
-                .antMatchers(HttpMethod.GET, "/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/**").permitAll()
-                .antMatchers(HttpMethod.PATCH, "/**").permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                .antMatchers("admin/**").hasRole("ADMIN")
+                .antMatchers("admin/allwords/**").hasRole("ADMIN")
+                .antMatchers("admin/addnewword/**").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.GET, "/**").permitAll()
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.DELETE, "/admin/**").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.PATCH, "/admin/**").hasRole("ADMIN")
                 .and()
-                .addFilterBefore(new LoginFilter("/auth", authenticationManager(), userDAO), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new LoginFilter("/login", authenticationManager(), userDAO), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new AllRequestsFilter(authTokenDAO), UsernamePasswordAuthenticationFilter.class);
     }
 }

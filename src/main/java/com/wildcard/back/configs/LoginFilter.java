@@ -21,30 +21,25 @@ import java.io.IOException;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private UserDAO userDAO;
     public LoginFilter(String url, AuthenticationManager authenticationManager, UserDAO userDAO) {
-        System.out.println("1");
         setFilterProcessesUrl(url);
         setAuthenticationManager(authenticationManager);
         this.userDAO = userDAO;
     }
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("2");
         User user = null;
         try {
             user = new ObjectMapper().readValue(request.getInputStream(), User.class);
-            System.out.println(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
         Authentication authenticate = getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        System.out.println(authenticate);
         return authenticate;
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        System.out.println("3");
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .signWith(SignatureAlgorithm.HS512, "WildCard".getBytes())
@@ -54,8 +49,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         authToken.setToken(token);
         authToken.setUser(user);
         user.getAuthTokens().add(authToken);
-//        userDAO.save(user);
-
+        userDAO.save(user);
         response.addHeader("Authorization", "Bearer " + token);
         chain.doFilter(request, response);
     }

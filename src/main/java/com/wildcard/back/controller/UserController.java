@@ -5,6 +5,7 @@ import com.wildcard.back.models.User;
 import com.wildcard.back.util.NativeLang;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,21 @@ import java.util.List;
 @RestController
 public class UserController {
     private UserDAO userDAO;
+    private PasswordEncoder passwordEncoder;
+
+    @PostMapping("/register")
+    public void register(@RequestParam String username,
+                         @RequestParam String password) {
+        User user = new User();
+        user.setPassword(passwordEncoder.encode(password));
+        user.setUsername(username);
+        userDAO.save(user);
+    }
+
+    @PostMapping("/login")
+    public void login() {
+        System.out.println("zdraste");
+    }
 
     @PostMapping("/user/add")
     public void addUser(@RequestParam String password,
