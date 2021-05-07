@@ -82,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PATCH, "/word/{id}/update").hasAnyRole("ADMIN", "USER")
                 .antMatchers(HttpMethod.POST, "/word/add").hasAnyRole("ADMIN", "USER")
                 .and()
-                .addFilterBefore(new LoginFilter("/auth/login", authenticationManager(), userDAO), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new LoginFilter("/login", authenticationManager(), userDAO), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new AllRequestsFilter(authTokenDAO), UsernamePasswordAuthenticationFilter.class);
     }
 }

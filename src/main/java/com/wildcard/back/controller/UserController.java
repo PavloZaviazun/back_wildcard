@@ -16,7 +16,7 @@ public class UserController {
     private UserDAO userDAO;
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/auth/register")
+    @PostMapping("/register")
     public void register(@RequestParam String username,
                          @RequestParam String password) {
         User user = new User();
@@ -25,7 +25,7 @@ public class UserController {
         userDAO.save(user);
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public void login() {
 
     }
