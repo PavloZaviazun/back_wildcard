@@ -4,9 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wildcard.back.util.NativeLang;
 import com.wildcard.back.util.Role;
 import lombok.*;
+//import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.authority.SimpleGrantedAuthority;
+//import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
@@ -14,7 +18,7 @@ import java.util.*;
 @ToString(exclude = {"libs"})
 @Getter
 @Setter
-public class User {
+public class User /*implements UserDetails*/ {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,4 +50,31 @@ public class User {
         this.nativeLang = nativeLang;
     }
 
+//    @Override
+//    public Collection <? extends GrantedAuthority> getAuthorities() {
+//        return role.stream()
+//                .map(role -> new SimpleGrantedAuthority(role.name()))
+//                .collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public String getUsername() {
+//        //TODO email here
+//        return email;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isCredentialsNonExpired() {
+//        return true;
+//    }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class LibController {
 
     private LibDAO libDAO;
@@ -65,6 +65,7 @@ public class LibController {
 
     @GetMapping("/libs/get")
     public List <Lib> getLibs() {
+        System.out.println("MAMA");
         return libDAO.findAll();
     }
 }
