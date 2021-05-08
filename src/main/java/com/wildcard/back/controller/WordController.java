@@ -1,7 +1,5 @@
 package com.wildcard.back.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.dao.WordDAO;
 import com.wildcard.back.models.Lib;
@@ -12,14 +10,11 @@ import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
@@ -28,15 +23,16 @@ public class WordController {
     private WordDAO wordDAO;
     private EntityManager entityManager;
 
-    @GetMapping("/searchByWord/{word}")
-    public List<Word> searchWord(@PathVariable String word) {
-        return wordDAO.searchByWord(word.toLowerCase());
+    @GetMapping("/searchByWord/{word}/page/{page}")
+    public Page<Word> searchWord(@PathVariable String word,
+                                 @PathVariable int page) {
+        return wordDAO.searchByWord(word.toLowerCase(), PageRequest.of(page - 1, 20));
     }
 
     @GetMapping("/searchByLetter/{letter}/page/{page}")
     public Page<Word> searchByLetter(@PathVariable String letter,
                                      @PathVariable int page) {
-        return wordDAO.searchByLetter(letter, PageRequest.of(page + 1, 20));
+        return wordDAO.searchByLetter(letter, PageRequest.of(page - 1, 20));
     }
 
     @GetMapping("/partsOfSpeech/{word}")

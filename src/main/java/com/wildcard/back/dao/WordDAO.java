@@ -15,8 +15,8 @@ import java.util.List;
 public interface WordDAO extends JpaRepository<Word, Integer> {
     Word findByWordAndPartOfSpeech(String word, PartOfSpeech partOfSpeech);
     List<Word> findByWord(String word);
-    @Query("SELECT w FROM Word w WHERE w.word LIKE %:word%")
-    List<Word> searchByWord(@Param("word") String word);
+    @Query("SELECT w FROM Word w WHERE w.word LIKE %:word% ORDER BY w.word")
+    Page<Word> searchByWord(@Param("word") String word, Pageable pageable);
     @Query("SELECT w FROM Word w WHERE w.word LIKE :letter% ORDER BY w.word")
     Page<Word> searchByLetter(@Param("letter") String letter, Pageable pageable);
 }
