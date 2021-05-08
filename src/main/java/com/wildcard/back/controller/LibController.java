@@ -2,6 +2,7 @@ package com.wildcard.back.controller;
 
 import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.models.Lib;
+import com.wildcard.back.models.Word;
 import com.wildcard.back.service.QueryService;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,11 @@ public class LibController {
 
     private LibDAO libDAO;
     private EntityManager entityManager;
+
+    @GetMapping("/searchLib/{name}")
+    public List<Lib> searchLib(@PathVariable String name) {
+        return libDAO.searchLib(name.toLowerCase());
+    }
 
     @GetMapping("libs/{idWord}")
     public List <Lib> getLibsOfWord(@PathVariable int idWord) {
