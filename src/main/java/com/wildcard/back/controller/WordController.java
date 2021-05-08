@@ -8,6 +8,7 @@ import com.wildcard.back.models.Word;
 import com.wildcard.back.service.QueryService;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class WordController {
     @GetMapping("/searchByWord/{word}/page/{page}")
     public Page<Word> searchWord(@PathVariable String word,
                                  @PathVariable int page) {
-        return wordDAO.searchByWord(word.toLowerCase(), PageRequest.of(page - 1, 20));
+        return wordDAO.searchByWord(word.toLowerCase(), PageRequest.of(page, 20));
     }
 
     @GetMapping("/searchByLetter/{letter}/page/{page}")
@@ -49,8 +50,21 @@ public class WordController {
         return array;
     }
 
-    @GetMapping("/lib/{id}/words/get")
-    public List <Word> getLibWords(@PathVariable int id) {
+//    @GetMapping("/lib/{id}/words/get")
+//    public List <Word> getLibWords(@PathVariable int id) {
+//        List<Integer> resultList = new QueryService(entityManager).selectWordsId(id);
+//        List<Word> list = new ArrayList <>();
+//        for(Integer el : resultList) {
+//            if(wordDAO.findById(el).isPresent()) {
+//                list.add(wordDAO.findById(el).get());
+//            }
+//        }
+//        return list;
+//    }
+
+    @GetMapping("/lib/{id}/words/get/page/{page}")
+    public PagedListHolder <Word> getLibWords(@PathVariable int id,
+                                              @PathVariable int page) {
         List<Integer> resultList = new QueryService(entityManager).selectWordsId(id);
         List<Word> list = new ArrayList <>();
         for(Integer el : resultList) {
@@ -58,7 +72,10 @@ public class WordController {
                 list.add(wordDAO.findById(el).get());
             }
         }
-        return list;
+        PagedListHolder<Word> pageHolder = new PagedListHolder<>(list);
+        pageHolder.setPageSize(20);
+        pageHolder.setPage(page);
+        return pageHolder;
     }
 
     @GetMapping("/word/{id}/get")
