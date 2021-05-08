@@ -3,7 +3,6 @@ package com.wildcard.back.configs;
 import com.wildcard.back.dao.AuthTokenDAO;
 import com.wildcard.back.models.AuthToken;
 import com.wildcard.back.models.User;
-import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
