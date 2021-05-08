@@ -33,7 +33,7 @@ public class WordController {
     @GetMapping("/searchByLetter/{letter}/page/{page}")
     public Page<Word> searchByLetter(@PathVariable String letter,
                                      @PathVariable int page) {
-        return wordDAO.searchByLetter(letter, PageRequest.of(page - 1, 20));
+        return wordDAO.searchByLetter(letter, PageRequest.of(page, 20));
     }
 
     @GetMapping("/partsOfSpeech/{word}")

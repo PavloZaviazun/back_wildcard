@@ -6,11 +6,14 @@ import com.wildcard.back.models.Word;
 import com.wildcard.back.service.QueryService;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
@@ -70,6 +73,12 @@ public class LibController {
 
     @GetMapping("/libs/get")
     public List <Lib> getLibs() {
-        return libDAO.findAll();
+        return libDAO.findAll().stream().sorted((a, b) -> a.getName().compareTo(b.getName())).collect(Collectors.toList());
     }
+
+    @GetMapping("/libs/get/page/{page}")
+    public Page <Lib> getLibsWP(@PathVariable int page) {
+        return libDAO.getLibsWP(PageRequest.of(page, 20));
+    }
+
 }
