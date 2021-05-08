@@ -23,6 +23,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(unique = true)
     private String username;
     private String password;
     @Column(unique = true)
@@ -44,11 +45,10 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Lib> libs;
 
-    public User(String password, String username/*String email, NativeLang nativeLang*/) {
+    public User(String password, String username, NativeLang nativeLang) {
         this.password = password;
         this.username = username;
-//        this.email = email;
-//        this.nativeLang = nativeLang;
+        this.nativeLang = nativeLang;
     }
 
     @Override

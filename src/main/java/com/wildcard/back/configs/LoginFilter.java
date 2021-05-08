@@ -20,6 +20,7 @@ import java.io.IOException;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private UserDAO userDAO;
+
     public LoginFilter(String url, AuthenticationManager authenticationManager, UserDAO userDAO) {
         setFilterProcessesUrl(url);
         setAuthenticationManager(authenticationManager);

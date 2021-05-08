@@ -5,10 +5,10 @@ import com.wildcard.back.models.User;
 import com.wildcard.back.util.NativeLang;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -17,12 +17,27 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public void register(@RequestParam String username,
-                         @RequestParam String password) {
-        User user = new User();
-        user.setPassword(passwordEncoder.encode(password));
-        user.setUsername(username);
-        userDAO.save(user);
+    public void register(@RequestParam String email,
+                         @RequestParam String password,
+                         @RequestParam String nativeLang) {
+        User userObj = new User();
+        String passwordRequest = Validation.oneStepValidation(password, Validation.PASSWORD_PATTERN);
+        if(passwordRequest != null) userObj.setPassword(passwordEncoder.encode(passwordRequest));
+
+        String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
+        if(emailRequest != null) {
+            userObj.setEmail(emailRequest);
+            userObj.setUsername(emailRequest);
+        }
+
+        NativeLang nativeLangRequest = Validation.nativeLangValidation(nativeLang);
+        if(nativeLangRequest != null) userObj.setNativeLang(nativeLangRequest);
+
+        if(userObj.getEmail() != null && userObj.getUsername() != null
+                && userObj.getPassword() != null && userObj.getNativeLang() != null) {
+            userDAO.save(userObj);
+
+        }
     }
 
     @PostMapping("/login")
@@ -30,34 +45,8 @@ public class UserController {
 
     }
 
-    @PostMapping("/user/add")
-    public void addUser(@RequestParam String password,
-                        @RequestParam String email,
-                        @RequestParam String nativeLang) {
-        User userObj = new User();
-
-        String passwordRequest = Validation.oneStepValidation(password, Validation.PASSWORD_PATTERN);
-        if(passwordRequest != null) userObj.setPassword(passwordRequest);
-
-        String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
-        if(emailRequest != null) {
-            userObj.setEmail(emailRequest);
-            //TODO emails can be different but logins will be the same
-            userObj.setUsername(email.split("@")[0]);
-        }
-
-        NativeLang nativeLangRequest = Validation.nativeLangValidation(nativeLang);
-        if(nativeLangRequest != null) userObj.setNativeLang(nativeLangRequest);
-        System.out.println(userObj);
-        if(userObj.getEmail() != null && userObj.getUsername() != null
-            && userObj.getPassword() != null && userObj.getNativeLang() != null) {
-            userDAO.save(userObj);
-        }
-    }
-
     @PatchMapping("/user/{id}/update")
     public void updateUser(@PathVariable int id,
-                           @RequestParam String password,
                            @RequestParam String email,
                            @RequestParam String nativeLang,
                            @RequestParam String login) {
@@ -65,18 +54,11 @@ public class UserController {
         User userObj = userDAO.getOne(id);
         boolean wasUpdated = false;
 
+        //TODO temporary Email == username
         if(!userObj.getUsername().equals(login)) {
-            String loginRequest = Validation.oneStepValidation(login, Validation.LOGIN_PATTERN);
+            String loginRequest = Validation.oneStepValidation(login, Validation.EMAIL_PATTERN);
             if(loginRequest != null) {
                 userObj.setUsername(loginRequest);
-                wasUpdated = true;
-            }
-        }
-
-        if(!userObj.getPassword().equals(password)) {
-            String passwordRequest = Validation.oneStepValidation(password, Validation.PASSWORD_PATTERN);
-            if(passwordRequest != null) {
-                userObj.setPassword(passwordRequest);
                 wasUpdated = true;
             }
         }
@@ -116,10 +98,9 @@ public class UserController {
         userDAO.deleteById(id);
     }
 
-    @GetMapping("/users/get")
-    public List <User> getUsers() {
-        return userDAO.findAll();
+    @GetMapping("/users/get/page/{page}")
+    public Page <User> getUsers(@PathVariable int page) {
+        return userDAO.getUsersWP(PageRequest.of(page, 20));
     }
-
 
 }
