@@ -1,6 +1,7 @@
 package com.wildcard.back.dao;
 
 import com.wildcard.back.models.Lib;
+import com.wildcard.back.util.Constants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,8 +13,8 @@ import java.util.List;
 
 @EnableJpaRepositories
 public interface LibDAO extends JpaRepository<Lib, Integer> {
-    @Query("SELECT l FROM Lib l WHERE l.name LIKE %:name%")
+    @Query(Constants.SEARCH_LIB)
     List <Lib> searchLib(@Param("name") String name);
-    @Query("SELECT l FROM Lib l ORDER BY l.name")
+    @Query(Constants.GET_LIBS_WITH_PAGINATION)
     Page <Lib> getLibsWP(Pageable pageable);
 }

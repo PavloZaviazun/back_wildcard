@@ -1,6 +1,7 @@
 package com.wildcard.back.dao;
 
 import com.wildcard.back.models.Word;
+import com.wildcard.back.util.Constants;
 import com.wildcard.back.util.PartOfSpeech;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +16,8 @@ import java.util.List;
 public interface WordDAO extends JpaRepository<Word, Integer> {
     Word findByWordAndPartOfSpeech(String word, PartOfSpeech partOfSpeech);
     List<Word> findByWord(String word);
-    @Query("SELECT w FROM Word w WHERE w.word LIKE %:word% ORDER BY w.word")
+    @Query(Constants.SEARCH_BY_WORD)
     Page<Word> searchByWord(@Param("word") String word, Pageable pageable);
-    @Query("SELECT w FROM Word w WHERE w.word LIKE :letter% ORDER BY w.word")
+    @Query(Constants.SEARCH_BY_LETTER)
     Page<Word> searchByLetter(@Param("letter") String letter, Pageable pageable);
 }

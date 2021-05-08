@@ -2,7 +2,6 @@ package com.wildcard.back.controller;
 
 import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.models.Lib;
-import com.wildcard.back.models.Word;
 import com.wildcard.back.service.QueryService;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
@@ -73,7 +72,10 @@ public class LibController {
 
     @GetMapping("/libs/get")
     public List <Lib> getLibs() {
-        return libDAO.findAll().stream().sorted((a, b) -> a.getName().compareTo(b.getName())).collect(Collectors.toList());
+        return libDAO.findAll()
+                .stream()
+                .sorted((a, b) -> a.getName().compareTo(b.getName()))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/libs/get/page/{page}")

@@ -2,7 +2,6 @@ package com.wildcard.back.models;
 
 import lombok.*;
 
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
 

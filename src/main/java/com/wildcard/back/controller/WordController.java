@@ -50,18 +50,6 @@ public class WordController {
         return array;
     }
 
-//    @GetMapping("/lib/{id}/words/get")
-//    public List <Word> getLibWords(@PathVariable int id) {
-//        List<Integer> resultList = new QueryService(entityManager).selectWordsId(id);
-//        List<Word> list = new ArrayList <>();
-//        for(Integer el : resultList) {
-//            if(wordDAO.findById(el).isPresent()) {
-//                list.add(wordDAO.findById(el).get());
-//            }
-//        }
-//        return list;
-//    }
-
     @GetMapping("/lib/{id}/words/get/page/{page}")
     public PagedListHolder <Word> getLibWords(@PathVariable int id,
                                               @PathVariable int page) {
