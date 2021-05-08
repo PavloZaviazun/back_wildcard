@@ -26,11 +26,11 @@ public class AllRequestsFilter extends GenericFilter {
         String authorizationToken = servletRequest.getHeader("Authorization");
         if(authorizationToken != null && authorizationToken.startsWith("Bearer ")) {
             String token = authorizationToken.replaceAll("Bearer ", "");
-            String tokenData = Jwts.parser().
-                    setSigningKey("WildCard".getBytes())
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
+//            String tokenData = Jwts.parser().
+//                    setSigningKey("WildCard".getBytes())
+//                    .parseClaimsJws(token)
+//                    .getBody()
+//                    .getSubject();
             AuthToken authToken = authTokenDAO.findByToken(token);
             User user = authToken.getUser();
             if(user != null) {
