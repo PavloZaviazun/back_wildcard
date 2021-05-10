@@ -3,6 +3,7 @@ package com.wildcard.back.controller;
 import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.dao.WordDAO;
 import com.wildcard.back.models.Lib;
+import com.wildcard.back.util.Constants;
 import com.wildcard.back.util.PartOfSpeech;
 import com.wildcard.back.models.Word;
 import com.wildcard.back.service.QueryService;
@@ -80,7 +81,7 @@ public class WordController {
     }
 
     @PatchMapping("/word/{id}/update")
-    public void updateWord(@PathVariable int id,
+    public String updateWord(@PathVariable int id,
                            @RequestParam String word,
                            @RequestParam String partOfSpeech,
                            @RequestParam String description,
@@ -92,7 +93,8 @@ public class WordController {
 
         if(!wordObj.getWord().equals(word)) {
             String wordRequest = Validation.wordValidation(word);
-            if(wordRequest != null) {
+            if(wordRequest == null) return Constants.WORD_DOESNT_FIT;
+            else {
                 wordObj.setWord(wordRequest);
                 wasUpdated = true;
             }
@@ -100,7 +102,8 @@ public class WordController {
 
         if(!wordObj.getPartOfSpeech().equals(PartOfSpeech.valueOf(partOfSpeech.toUpperCase()))) {
             PartOfSpeech partOfSpeechRequest = Validation.partOfSpeechValidation(partOfSpeech.toUpperCase());
-            if(partOfSpeechRequest != null) {
+            if(partOfSpeechRequest == null) return Constants.PART_OF_SPEECH_DOESNT_FIT;
+            else {
                 wordObj.setPartOfSpeech(partOfSpeechRequest);
                 wasUpdated = true;
             }
@@ -108,7 +111,8 @@ public class WordController {
 
         if(!wordObj.getDescription().equals(description)) {
             String descriptionRequest = Validation.sentenceValidation(description);
-            if(descriptionRequest != null) {
+            if(descriptionRequest == null) return Constants.DESCRIPTION_DOESNT_FIT;
+            else {
                 wordObj.setDescription(descriptionRequest);
                 wasUpdated = true;
             }
@@ -116,7 +120,8 @@ public class WordController {
 
         if(!wordObj.getExample().equals(example)) {
             String exampleRequest = Validation.sentenceValidation(example);
-            if(exampleRequest != null) {
+            if(exampleRequest == null) return Constants.SENTENCE_DOESNT_FIT;
+            else {
                 wordObj.setExample(exampleRequest);
                 wasUpdated = true;
             }
@@ -124,7 +129,8 @@ public class WordController {
 
         if(!wordObj.getTranslation().equals(translation)) {
             String translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
-            if(translationRequest != null) {
+            if(translationRequest == null) return Constants.TRANSLATION_DOESNT_FIT;
+            else {
                 wordObj.setTranslation(translationRequest);
                 wasUpdated = true;
             }
@@ -132,11 +138,13 @@ public class WordController {
 
         if(wasUpdated) {
             wordDAO.save(wordObj);
+            return Constants.WORD_UPDATE_SUCCESS;
         }
+        return Constants.WORD_UPDATE_UNSUCCESS;
     }
 
     @PostMapping("/word/add")
-    public void addWord(@RequestParam String word,
+    public String addWord(@RequestParam String word,
                               @RequestParam String partOfSpeech,
                               @RequestParam String description,
                               @RequestParam String example,
@@ -145,25 +153,32 @@ public class WordController {
 
         Word wordObj = new Word();
         String wordRequest = Validation.wordValidation(word);
-        if(wordRequest != null) wordObj.setWord(wordRequest);
+        if(wordRequest == null) return Constants.WORD_DOESNT_FIT;
+            wordObj.setWord(wordRequest);
 
         PartOfSpeech partOfSpeechRequest = Validation.partOfSpeechValidation(partOfSpeech.toUpperCase());
-        if(partOfSpeechRequest != null) wordObj.setPartOfSpeech(partOfSpeechRequest);
+        if(partOfSpeechRequest == null) return Constants.PART_OF_SPEECH_DOESNT_FIT;
+            wordObj.setPartOfSpeech(partOfSpeechRequest);
 
         String descriptionRequest = Validation.sentenceValidation(description);
-        if(descriptionRequest != null) wordObj.setDescription(descriptionRequest);
+        if(descriptionRequest == null) return Constants.DESCRIPTION_DOESNT_FIT;
+            wordObj.setDescription(descriptionRequest);
 
         String exampleRequest = Validation.sentenceValidation(example);
-        if(exampleRequest != null) wordObj.setExample(exampleRequest);
+        if(exampleRequest == null) return Constants.SENTENCE_DOESNT_FIT;
+            wordObj.setExample(exampleRequest);
 
         String translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
-        if(translationRequest != null) wordObj.setTranslation(translationRequest);
+        if(translationRequest != null) return Constants.TRANSLATION_DOESNT_FIT;
+            wordObj.setTranslation(translationRequest);
 
         if(wordObj.getWord() != null && wordObj.getPartOfSpeech() != null
             && wordObj.getDescription() != null && wordObj.getExample() != null
             && wordObj.getTranslation() != null) {
                 wordDAO.save(wordObj);
+                return Constants.WORD_SAVE_SUCCESS;
         }
+        return Constants.WORD_SAVE_UNSUCCESS;
     }
 
     @GetMapping("/words/get")

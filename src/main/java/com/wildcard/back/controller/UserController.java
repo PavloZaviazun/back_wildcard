@@ -30,10 +30,12 @@ public class UserController {
         if (userDAO.findByEmail(email) != null) return Constants.USER_EXISTS_ALREADY;
         User userObj = new User();
         String passwordRequest = Validation.oneStepValidation(password, Validation.PASSWORD_PATTERN);
-        if (passwordRequest != null) userObj.setPassword(passwordEncoder.encode(passwordRequest));
+        if (passwordRequest == null) return Constants.PASSWORD_DOESNT_FIT;
+        else userObj.setPassword(passwordEncoder.encode(passwordRequest));
         //TODO запретить повторную регистрацию
         String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
-        if (emailRequest != null) {
+        if (emailRequest == null) return Constants.EMAIL_DOESNT_FIT;
+        else {
             userObj.setEmail(emailRequest);
             userObj.setUsername(emailRequest);
         }
@@ -84,7 +86,7 @@ public class UserController {
     }
 
     @PatchMapping("/user/{id}/update")
-    public void updateUser(@PathVariable int id,
+    public String updateUser(@PathVariable int id,
                            @RequestParam String email,
                            @RequestParam String nativeLang) {
 
@@ -102,7 +104,8 @@ public class UserController {
 
         if (!userObj.getEmail().equals(email)) {
             String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
-            if (emailRequest != null) {
+            if (emailRequest == null) return Constants.EMAIL_DOESNT_FIT;
+            else {
                 mailService.sendEmailToChangeMail(email, id);
             }
         }
@@ -119,7 +122,9 @@ public class UserController {
 
         if (wasUpdated) {
             userDAO.save(userObj);
+            return Constants.USER_UPDATE;
         }
+        return Constants.USER_NOT_UPDATE;
     }
 
     @GetMapping("/user/get")
@@ -135,7 +140,6 @@ public class UserController {
         }
         return new User();
     }
-
 
     @DeleteMapping("/user/{id}/delete")
     public void deleteUser(@PathVariable int id) {
