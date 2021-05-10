@@ -3,6 +3,7 @@ package com.wildcard.back.controller;
 import com.wildcard.back.dao.UserDAO;
 import com.wildcard.back.models.User;
 import com.wildcard.back.service.MailService;
+import com.wildcard.back.util.Constants;
 import com.wildcard.back.util.NativeLang;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
@@ -23,9 +24,10 @@ public class UserController {
     private MailService mailService;
 
     @PostMapping("/register")
-    public void register(@RequestParam String email,
+    public String register(@RequestParam String email,
                          @RequestParam String password,
                          @RequestParam String nativeLang) {
+        if (userDAO.findByEmail(email) != null) return Constants.USER_EXISTS_ALREADY;
         User userObj = new User();
         String passwordRequest = Validation.oneStepValidation(password, Validation.PASSWORD_PATTERN);
         if (passwordRequest != null) userObj.setPassword(passwordEncoder.encode(passwordRequest));
@@ -45,6 +47,7 @@ public class UserController {
             User byEmail = userDAO.findByEmail(email);
             mailService.sendEmailToEnableUser(email, byEmail.getId());
         }
+        return Constants.USER_ENABLE_REGISTRATION;
     }
 
     @PostMapping("/login")
@@ -56,12 +59,12 @@ public class UserController {
     public String activateUser(@PathVariable int id) {
         if (userDAO.findById(id).isPresent()) {
             User user = userDAO.findById(id).get();
-            if (user.isEnabled()) return "Вы уже активировали учетную запись!";
+            if (user.isEnabled()) return Constants.USER_IS_ENABLED_ALREADY;
             user.setEnabled(true);
             userDAO.save(user);
-            return "Ваш аккаунт активирован, спасибо за регистрацию!";
+            return Constants.USER_IS_ENABLED;
         }
-        return "Произошла ошибка активации пользователя";
+        return Constants.ENABLE_MISTAKE;
     }
 
     @GetMapping("/update/{id}/newemail/{email}")
@@ -74,10 +77,10 @@ public class UserController {
                 user.setEmail(email);
                 user.setUsername(email);
                 userDAO.save(user);
-                return "Ваша почта успешно изменена!";
+                return Constants.USER_UPDATE_EMAIL;
             }
         }
-        return "Ваша почта не была изменена";
+        return Constants.USER_NOT_UPDATE_EMAIL;
     }
 
     @PatchMapping("/user/{id}/update")
