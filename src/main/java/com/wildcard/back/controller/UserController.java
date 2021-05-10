@@ -66,7 +66,7 @@ public class UserController {
         User user = userDAO.getOne(id);
         user.setEmail(email);
         userDAO.save(user);
-        return "Ваш почта успешно изменена!";
+        return "Ваша почта успешно изменена!";
     }
 
     @PatchMapping("/user/{id}/update")
