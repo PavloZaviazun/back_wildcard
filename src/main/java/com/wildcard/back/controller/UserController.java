@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -108,6 +109,12 @@ public class UserController {
         if (wasUpdated) {
             userDAO.save(userObj);
         }
+    }
+
+    @GetMapping("/user/get")
+    @ResponseBody
+    public User getUser(Principal principal) {
+        return userDAO.findUserByUsername(principal.getName());
     }
 
     @GetMapping("/user/{id}/get")
