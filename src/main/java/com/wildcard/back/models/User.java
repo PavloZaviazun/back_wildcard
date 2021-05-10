@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Entity
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString(exclude = {"libs"})
+@ToString(exclude = {"libs", "authTokens"})
 @Getter
 @Setter
 public class User implements UserDetails {
@@ -30,11 +30,12 @@ public class User implements UserDetails {
     private String email;
     @Enumerated(EnumType.STRING)
     private NativeLang nativeLang;
-    private boolean isEnabled = true;
+    private boolean isEnabled = false;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private List <Role> roles = Arrays.asList(Role.ROLE_USER);
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set <AuthToken> authTokens = new HashSet <>();
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<CustomLib> customLibs;
@@ -56,6 +57,14 @@ public class User implements UserDetails {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 
     @Override

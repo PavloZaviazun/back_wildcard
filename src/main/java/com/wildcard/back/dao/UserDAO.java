@@ -13,4 +13,5 @@ public interface UserDAO extends JpaRepository<User, Integer> {
     User findUserByUsername(String s);
     @Query(Constants.GET_USERS_WITH_PAGINATION)
     Page <User> getUsersWP(Pageable pageable);
+    User findByEmail(String email);
 }

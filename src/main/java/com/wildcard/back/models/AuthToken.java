@@ -10,7 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 //@EqualsAndHashCode
-//@ToString
+@ToString
 public class AuthToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

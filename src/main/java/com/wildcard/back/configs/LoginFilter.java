@@ -17,6 +17,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Date;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private UserDAO userDAO;
@@ -41,8 +48,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+//        Date date = Date.from(LocalDateTime.now().plus(1, ChronoUnit.MINUTES).toInstant(ZoneOffset.ofHours(1)));
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
+//                .setExpiration(date)
                 .signWith(SignatureAlgorithm.HS512, "WildCard".getBytes())
                 .compact();
         User user = userDAO.findUserByUsername(authResult.getName());
