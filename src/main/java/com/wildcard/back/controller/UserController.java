@@ -136,12 +136,4 @@ public class UserController {
         return userDAO.getUsersWP(PageRequest.of(page, 20));
     }
 
-    @PostMapping("/user/{id}/lang/update/{lang}")
-    public void setLang(@PathVariable int id,
-                        @PathVariable String lang) {
-        if (userDAO.findById(id).isPresent()) {
-            User one = userDAO.findById(id).get();
-
-        }
-    }
 }
