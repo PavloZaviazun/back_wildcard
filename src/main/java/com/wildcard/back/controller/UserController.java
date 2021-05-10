@@ -54,20 +54,30 @@ public class UserController {
 
     @GetMapping("/activate/{id}")
     public String activateUser(@PathVariable int id) {
-        User user = userDAO.getOne(id);
-        if (user.isEnabled()) return "Вы уже активировали учетную запись!";
-        user.setEnabled(true);
-        userDAO.save(user);
-        return "Ваш аккаунт активирован, спасибо за регистрацию!";
+        if (userDAO.findById(id).isPresent()) {
+            User user = userDAO.findById(id).get();
+            if (user.isEnabled()) return "Вы уже активировали учетную запись!";
+            user.setEnabled(true);
+            userDAO.save(user);
+            return "Ваш аккаунт активирован, спасибо за регистрацию!";
+        }
+        return "Произошла ошибка активации пользователя";
     }
 
     @GetMapping("/update/{id}/newemail/{email}")
     public String updateUserEmail(@PathVariable int id,
                                   @PathVariable String email) {
-        User user = userDAO.getOne(id);
-        user.setEmail(email);
-        userDAO.save(user);
-        return "Ваша почта успешно изменена!";
+        if (userDAO.findById(id).isPresent()) {
+            User user = userDAO.findById(id).get();
+            String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
+            if (emailRequest != null) {
+                user.setEmail(email);
+                user.setUsername(email);
+                userDAO.save(user);
+                return "Ваша почта успешно изменена!";
+            }
+        }
+        return "Ваша почта не была изменена";
     }
 
     @PatchMapping("/user/{id}/update")
@@ -91,8 +101,6 @@ public class UserController {
             String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
             if (emailRequest != null) {
                 mailService.sendEmailToChangeMail(email, id);
-//                userObj.setEmail(emailRequest);
-//                wasUpdated = true;
             }
         }
 
@@ -135,5 +143,4 @@ public class UserController {
     public Page<User> getUsers(@PathVariable int page) {
         return userDAO.getUsersWP(PageRequest.of(page, 20));
     }
-
 }
