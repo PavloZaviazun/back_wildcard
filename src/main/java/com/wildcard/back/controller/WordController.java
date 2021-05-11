@@ -3,6 +3,7 @@ package com.wildcard.back.controller;
 import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.dao.WordDAO;
 import com.wildcard.back.models.Lib;
+import com.wildcard.back.models.Translation;
 import com.wildcard.back.util.Constants;
 import com.wildcard.back.util.PartOfSpeech;
 import com.wildcard.back.models.Word;
@@ -13,6 +14,7 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -86,8 +88,8 @@ public class WordController {
                            @RequestParam String partOfSpeech,
                            @RequestParam String description,
                            @RequestParam String example,
-                           @RequestParam String image,
-                           @RequestParam String translation) {
+                           @RequestParam String translation,
+                           @RequestParam MultipartFile image) {
         Word wordObj = wordDAO.getOne(id);
         boolean wasUpdated = false;
 
@@ -140,14 +142,15 @@ public class WordController {
 
     @PostMapping("/word/add")
     public String addWord(@RequestParam String word,
-                              @RequestParam String partOfSpeech,
-                              @RequestParam String description,
-                              @RequestParam String example,
-                              @RequestParam String image,
-                              @RequestParam String translation) {
+                          @RequestParam String partOfSpeech,
+                          @RequestParam String description,
+                          @RequestParam String example,
+                          @RequestParam String translationRu,
+                          @RequestParam String translationUa,
+                          @RequestParam MultipartFile image) {
 
         Word wordObj = new Word();
-
+        System.out.println(image.getOriginalFilename());
         String wordRequest = null;
         if(word != null && !word.isEmpty()) wordRequest = Validation.wordValidation(word);
         if(wordRequest == null) return Constants.WORD_DOESNT_FIT;
@@ -166,6 +169,10 @@ public class WordController {
         if(example != null && !example.isEmpty()) exampleRequest = Validation.sentenceValidation(example);
         if(exampleRequest == null) return Constants.EXAMPLE_DOESNT_FIT;
         wordObj.setExample(exampleRequest);
+
+
+        Translation translationObj = new Translation(translationRu, translationUa);
+        String translation = translationObj.toString();
 
         String translationRequest = null;
         if(translation != null && !translation.isEmpty()) translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
@@ -188,13 +195,14 @@ public class WordController {
 
     @PostMapping("/lib/{idLib}/add")
     public String addNewWordToLib(@PathVariable int idLib,
-                                @RequestParam String word,
-                                @RequestParam String partOfSpeech,
-                                @RequestParam String description,
-                                @RequestParam String example,
-                                @RequestParam String image,
-                                @RequestParam String translation) {
-        addWord(word, partOfSpeech, description, example, image,translation);
+                                  @RequestParam String word,
+                                  @RequestParam String partOfSpeech,
+                                  @RequestParam String description,
+                                  @RequestParam String example,
+                                  @RequestParam String translationRu,
+                                  @RequestParam String translationUa,
+                                  @RequestParam MultipartFile image) {
+        addWord(word, partOfSpeech, description, example, translationRu, translationUa, image);
         Word wordObj = wordDAO.findByWordAndPartOfSpeech(word, PartOfSpeech.valueOf(partOfSpeech.toUpperCase()));
         if(libDAO.findById(idLib).isPresent()) {
             Lib lib = libDAO.findById(idLib).get();
