@@ -39,11 +39,11 @@ public class UserController {
                            @RequestParam String nativeLang) {
         if (userDAO.findByEmail(email) != null) return Constants.USER_EXISTS_ALREADY;
         User userObj = new User();
-        String passwordRequest = Validation.oneStepValidation(password, Validation.PASSWORD_PATTERN);
+        String passwordRequest = Validation.oneStepValidation(password, Constants.PASSWORD_PATTERN);
         if (passwordRequest == null) return Constants.PASSWORD_DOESNT_FIT;
         else userObj.setPassword(passwordEncoder.encode(passwordRequest));
         //TODO запретить повторную регистрацию
-        String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
+        String emailRequest = Validation.oneStepValidation(email, Constants.EMAIL_PATTERN);
         if (emailRequest == null) return Constants.EMAIL_DOESNT_FIT;
         else {
             userObj.setEmail(emailRequest);
@@ -84,7 +84,7 @@ public class UserController {
                                   @PathVariable String email) {
         if (userDAO.findById(id).isPresent()) {
             User user = userDAO.findById(id).get();
-            String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
+            String emailRequest = Validation.oneStepValidation(email, Constants.EMAIL_PATTERN);
             if (emailRequest != null) {
                 user.setEmail(email);
                 user.setUsername(email);
@@ -115,7 +115,7 @@ public class UserController {
         if (!userObj.getEmail().equals(email)) {
             String emailRequest = null;
             if (email != null && !email.isEmpty())
-                emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
+                emailRequest = Validation.oneStepValidation(email, Constants.EMAIL_PATTERN);
             if (emailRequest == null) return Constants.EMAIL_DOESNT_FIT;
             mailService.sendEmailToChangeMail(email, id);
         }

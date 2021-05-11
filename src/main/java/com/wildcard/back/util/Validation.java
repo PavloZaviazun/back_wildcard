@@ -6,13 +6,6 @@ import java.util.regex.Pattern;
 public class Validation {
     private Validation(){}
 
-    public static final String SENTENCE_PATTERN = "[A-Z|0-9](\\w+\\p{Punct}*\\s*)+";
-    public static final String WORD_PATTERN = "[A-Z][a-z]+";
-    public static final String JSON_PATTERN = "\\{\\s*\"ru\"\\s*\\:\\s*\"([а-яА-ЯъЪёЁэЭ;\\s]*;?)*\"\\s*\\,\\s*\"ua\"\\s*\\:\\s*\"[а-яА-ЯїЇіІєЄ'';\\s]*\"\\s*\\}";
-    public static final String LOGIN_PATTERN = "[\\w.%+-]{3,30}";
-    public static final String PASSWORD_PATTERN = "[\\w\\p{Punct}]{5,30}";
-    public static final String EMAIL_PATTERN = "^[\\w.%+-]{3,30}@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
-
     public static boolean checkValidation(String text, String expression) {
         Pattern pattern = Pattern.compile(expression);
         Matcher matcher = pattern.matcher(text);
@@ -37,13 +30,13 @@ public class Validation {
     }
 
     public static String wordValidation(String word) {
-        if(!checkValidation(word, WORD_PATTERN)) {
+        if(!checkValidation(word, Constants.WORD_PATTERN)) {
             word = firstToTitleCase(word);
         }
-        if(!checkValidation(word, WORD_PATTERN)) {
+        if(!checkValidation(word, Constants.WORD_PATTERN)) {
             word = lastsToLowerCase(word);
         }
-        if(checkValidation(word, WORD_PATTERN)) {
+        if(checkValidation(word, Constants.WORD_PATTERN)) {
             return word;
         }
         return null;
@@ -65,10 +58,10 @@ public class Validation {
     }
 
     public static String sentenceValidation(String sentence) {
-        if(!checkValidation(sentence, SENTENCE_PATTERN)) {
+        if(!checkValidation(sentence, Constants.SENTENCE_PATTERN)) {
             sentence = firstToTitleCase(sentence);
         }
-        if(checkValidation(sentence, SENTENCE_PATTERN)) {
+        if(checkValidation(sentence, Constants.SENTENCE_PATTERN)) {
             return sentence;
         }
         return null;
