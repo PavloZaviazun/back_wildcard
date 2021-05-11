@@ -261,7 +261,7 @@ public class UserController {
     public String addUserLib(Principal principal, @PathVariable int id) {
         User user = userDAO.findUserByUsername(principal.getName());
         List<Lib> libs = user.getLibs();
-        if (libDAO.findById(id).isPresent()){
+        if (libDAO.findById(id).isPresent()) {
             Lib lib = libDAO.findById(id).get();
             libs.add(lib);
             user.setLibs(libs);
@@ -275,7 +275,7 @@ public class UserController {
     public String deleteUserLib(Principal principal, @PathVariable int id) {
         User user = userDAO.findUserByUsername(principal.getName());
         List<Lib> libs = user.getLibs();
-        if (libDAO.findById(id).isPresent()){
+        if (libDAO.findById(id).isPresent()) {
             Lib lib = libDAO.findById(id).get();
             libs.remove(lib);
             user.setLibs(libs);

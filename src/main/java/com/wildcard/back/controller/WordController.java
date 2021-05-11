@@ -4,6 +4,7 @@ import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.dao.WordDAO;
 import com.wildcard.back.models.Lib;
 import com.wildcard.back.models.Translation;
+import com.wildcard.back.service.MainService;
 import com.wildcard.back.util.Constants;
 import com.wildcard.back.util.PartOfSpeech;
 import com.wildcard.back.models.Word;
@@ -150,7 +151,7 @@ public class WordController {
                           @RequestParam MultipartFile image) {
 
         Word wordObj = new Word();
-        System.out.println(image.getOriginalFilename());
+
         String wordRequest = null;
         if(word != null && !word.isEmpty()) wordRequest = Validation.wordValidation(word);
         if(wordRequest == null) return Constants.WORD_DOESNT_FIT;
@@ -179,11 +180,17 @@ public class WordController {
         if(translationRequest == null) return Constants.TRANSLATION_DOESNT_FIT;
         wordObj.setTranslation(translationRequest);
 
+        if(image != null) {
+            String imageName = image.getOriginalFilename();
+            wordObj.setImage(imageName);
+            MainService.saveImage(image);
+        }
+
         if(wordObj.getWord() != null && wordObj.getPartOfSpeech() != null
-            && wordObj.getDescription() != null && wordObj.getExample() != null
-            && wordObj.getTranslation() != null) {
-                wordDAO.save(wordObj);
-                return Constants.WORD_SAVE_SUCCESS;
+                && wordObj.getDescription() != null && wordObj.getExample() != null
+                && wordObj.getTranslation() != null) {
+            wordDAO.save(wordObj);
+            return Constants.WORD_SAVE_SUCCESS;
         }
         return Constants.WORD_SAVE_UNSUCCESS;
     }
