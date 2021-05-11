@@ -53,8 +53,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public void login() {
-
+    public String login() {
+        return "Successfull ligination";
     }
 
     @GetMapping("/activate/{id}")
