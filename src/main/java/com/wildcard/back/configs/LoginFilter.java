@@ -34,15 +34,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         this.userDAO = userDAO;
     }
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response){
         User user = null;
         try {
             user = new ObjectMapper().readValue(request.getInputStream(), User.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Authentication authenticate = getAuthenticationManager().authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        Authentication authenticate = null;
+        if (user != null && user.isEnabled()) {
+            authenticate = getAuthenticationManager().authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        }
         return authenticate;
     }
 
@@ -63,4 +66,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.addHeader("Authorization", "Bearer " + token);
         chain.doFilter(request, response);
     }
+
+//    @Override
+//    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+//        super.unsuccessfulAuthentication(request, response, failed);
+//    }
 }

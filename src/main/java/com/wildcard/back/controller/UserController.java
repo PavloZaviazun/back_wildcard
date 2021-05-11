@@ -54,7 +54,12 @@ public class UserController {
 
     @PostMapping("/login")
     public String login() {
-        return "Successfull ligination";
+        return "Successfull logination";
+    }
+
+    @PostMapping("/login_error")
+    public String login_error() {
+        return "UNSuccessfull logination";
     }
 
     @GetMapping("/activate/{id}")

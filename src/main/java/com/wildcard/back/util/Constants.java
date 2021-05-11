@@ -22,8 +22,8 @@ public class Constants {
     public static final String WORD_DOESNT_FIT = "Перевірте чи вірно написано слово англійською";
     public static final String PART_OF_SPEECH_DOESNT_FIT = "Перевірте частину мови";
     public static final String DESCRIPTION_DOESNT_FIT = "Перевірте правильність написаного у полі Description";
-    public static final String SENTENCE_DOESNT_FIT = "Перевірте правильність написаного у полі Sentence";
-    public static final String TRANSLATION_DOESNT_FIT = "Перевірте правильність написаного у полі Example";
+    public static final String EXAMPLE_DOESNT_FIT = "Перевірте правильність написаного у полі Example";
+    public static final String TRANSLATION_DOESNT_FIT = "Перевірте правильність написаного у полі Translation";
     public static final String WORD_UPDATE_SUCCESS = "Слово успішно оновлено";
     public static final String WORD_UPDATE_UNSUCCESS = "Слово не було оновлено";
     public static final String WORD_SAVE_SUCCESS = "Слово успішно додано";

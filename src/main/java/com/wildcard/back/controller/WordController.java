@@ -120,7 +120,7 @@ public class WordController {
 
         if(!wordObj.getExample().equals(example)) {
             String exampleRequest = Validation.sentenceValidation(example);
-            if(exampleRequest == null) return Constants.SENTENCE_DOESNT_FIT;
+            if(exampleRequest == null) return Constants.EXAMPLE_DOESNT_FIT;
             else {
                 wordObj.setExample(exampleRequest);
                 wasUpdated = true;
@@ -165,7 +165,7 @@ public class WordController {
             wordObj.setDescription(descriptionRequest);
 
         String exampleRequest = Validation.sentenceValidation(example);
-        if(exampleRequest == null) return Constants.SENTENCE_DOESNT_FIT;
+        if(exampleRequest == null) return Constants.EXAMPLE_DOESNT_FIT;
             wordObj.setExample(exampleRequest);
 
         String translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
