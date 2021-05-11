@@ -14,20 +14,20 @@ public class CustomLib {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String favLib;
+    private String customLib;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private User user;
 
     public CustomLib() {
-        this.favLib = "{\"name\": \"Favourite\", \"listOfWords\": []}";
+        this.customLib = "{\"name\": \"Custom\", \"listOfWords\": []}";
     }
 
     @Override
     public String toString() {
         return "CustomLib{" +
                 "id=" + id +
-                ", favLib='" + favLib + '\'' +
+                ", customLib='" + customLib + '\'' +
                 ", userId=" + user.getId() +
                 '}';
     }

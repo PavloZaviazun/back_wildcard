@@ -160,18 +160,18 @@ public class UserController {
         return userDAO.getUsersWP(PageRequest.of(page, 20));
     }
 
-    @PostMapping("/user/add/fav/word")
+    @PostMapping("/user/add/customlib/word")
     public String addToUserFavLib(Principal principal, @RequestParam int id) {
         // {"name": "Favourite", "listOfWords": []}
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
         ObjectMapper obj = new ObjectMapper();
         try {
-            FavLib favLib = obj.readValue(customLib.getFavLib(), FavLib.class);
+            FavLib favLib = obj.readValue(customLib.getCustomLib(), FavLib.class);
             List<Integer> listOfWords = favLib.getListOfWords();
             if (wordDAO.findById(id).isPresent()) {
                 listOfWords.add(id);
-                customLib.setFavLib(favLib.toString());
+                customLib.setCustomLib(favLib.toString());
                 customLibDAO.save(customLib);
                 return Constants.WORD_ADDED_TO_FAV;
             }
@@ -181,16 +181,16 @@ public class UserController {
         return Constants.WORD_NOT_ADDED_TO_FAV;
     }
 
-    @DeleteMapping("/user/delete/fav/word/{id}")
+    @DeleteMapping("/user/delete/customlib/word/{id}")
     public String deleteFromUserFavLib(Principal principal, @PathVariable int id) {
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
         ObjectMapper obj = new ObjectMapper();
         try {
-            FavLib favLib = obj.readValue(customLib.getFavLib(), FavLib.class);
+            FavLib favLib = obj.readValue(customLib.getCustomLib(), FavLib.class);
             List<Integer> listOfWords = favLib.getListOfWords();
             listOfWords.remove(Integer.valueOf(id));
-            customLib.setFavLib(favLib.toString());
+            customLib.setCustomLib(favLib.toString());
             customLibDAO.save(customLib);
             return Constants.WORD_DELETED_FROM_FAV;
         } catch (JsonProcessingException e) {
@@ -199,14 +199,14 @@ public class UserController {
         return Constants.WORD_NOT_DELETED_FROM_FAV;
     }
 
-    @GetMapping("/user/favlib")
+    @GetMapping("/user/get/customlib")
     public List<Word> getUserFavLib(Principal principal) {
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
         ObjectMapper obj = new ObjectMapper();
         List<Word> favWords = new ArrayList<>();
         try {
-            FavLib favLib = obj.readValue(customLib.getFavLib(), FavLib.class);
+            FavLib favLib = obj.readValue(customLib.getCustomLib(), FavLib.class);
             List<Integer> listOfWords = favLib.getListOfWords();
             List<Integer> newListOfWords = favLib.getListOfWords();
             for (int a = 0; a < listOfWords.size(); a++) {
@@ -218,7 +218,7 @@ public class UserController {
                 }
             }
             favLib.setListOfWords(newListOfWords);
-            customLib.setFavLib(favLib.toString());
+            customLib.setCustomLib(favLib.toString());
             customLibDAO.save(customLib);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -226,7 +226,7 @@ public class UserController {
         return favWords;
     }
 
-    @PostMapping("/user/add/lib/{id}")
+    @PostMapping("/user/add/favlib/{id}")
     public String addUserLib(Principal principal, @PathVariable int id) {
         User user = userDAO.findUserByUsername(principal.getName());
         List<Lib> libs = user.getLibs();
@@ -240,7 +240,7 @@ public class UserController {
         return Constants.LIB_NOT_ADDED_TO_FAV;
     }
 
-    @PostMapping("/user/delete/lib/{id}")
+    @PostMapping("/user/delete/favlib/{id}")
     public String deleteUserLib(Principal principal, @PathVariable int id) {
         User user = userDAO.findUserByUsername(principal.getName());
         List<Lib> libs = user.getLibs();
@@ -254,7 +254,7 @@ public class UserController {
         return Constants.LIB_NOT_DELETED_FROM_FAV;
     }
 
-    @PostMapping("/user/get/libs")
+    @PostMapping("/user/get/favlibs")
     public List<Lib> getUserLibs(Principal principal) {
         User user = userDAO.findUserByUsername(principal.getName());
         return user.getLibs();
