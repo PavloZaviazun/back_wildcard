@@ -173,12 +173,12 @@ public class UserController {
                 listOfWords.add(id);
                 customLib.setFavLib(favLib.toString());
                 customLibDAO.save(customLib);
-                return "VSE OK";
+                return Constants.WORD_ADDED_TO_FAV;
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return "VSE NE OK";
+        return Constants.WORD_NOT_ADDED_TO_FAV;
     }
 
     @DeleteMapping("/user/delete/fav/word/{id}")
@@ -192,11 +192,11 @@ public class UserController {
             listOfWords.remove(Integer.valueOf(id));
             customLib.setFavLib(favLib.toString());
             customLibDAO.save(customLib);
-            return "VSE OK";
+            return Constants.WORD_DELETED_FROM_FAV;
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return "VSE NE OK";
+        return Constants.WORD_NOT_DELETED_FROM_FAV;
     }
 
     @GetMapping("/user/favlib")
@@ -235,9 +235,9 @@ public class UserController {
             libs.add(lib);
             user.setLibs(libs);
             userDAO.save(user);
-            return "VSE OK";
+            return Constants.LIB_ADDED_TO_FAV;
         }
-        return "VSE NE OK";
+        return Constants.LIB_NOT_ADDED_TO_FAV;
     }
 
     @PostMapping("/user/delete/lib/{id}")
@@ -249,9 +249,9 @@ public class UserController {
             libs.remove(lib);
             user.setLibs(libs);
             userDAO.save(user);
-            return "VSE OK";
+            return Constants.LIB_DELETED_FROM_FAV;
         }
-        return "VSE NE OK";
+        return Constants.LIB_NOT_DELETED_FROM_FAV;
     }
 
     @PostMapping("/user/get/libs")
