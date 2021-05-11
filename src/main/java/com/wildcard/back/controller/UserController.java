@@ -57,11 +57,6 @@ public class UserController {
         return "Successfull logination";
     }
 
-    @PostMapping("/login_error")
-    public String login_error() {
-        return "UNSuccessfull logination";
-    }
-
     @GetMapping("/activate/{id}")
     public String activateUser(@PathVariable int id) {
         if (userDAO.findById(id).isPresent()) {

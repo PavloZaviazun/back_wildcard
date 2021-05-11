@@ -17,13 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.Date;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private UserDAO userDAO;
@@ -42,10 +35,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             e.printStackTrace();
         }
         Authentication authenticate = null;
-        if (user != null && user.isEnabled()) {
+//        if (user != null && user.isEnabled()) {
             authenticate = getAuthenticationManager().authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        }
+//        }
         return authenticate;
     }
 
@@ -70,5 +63,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 //    @Override
 //    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
 //        super.unsuccessfulAuthentication(request, response, failed);
+//        System.out.println("User not found");
 //    }
 }
