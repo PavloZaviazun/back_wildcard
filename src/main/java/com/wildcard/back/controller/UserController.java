@@ -160,8 +160,8 @@ public class UserController {
         return userDAO.getUsersWP(PageRequest.of(page, 20));
     }
 
-    @PostMapping("/user/add/fav/word/{id}")
-    public String addToUserFavLib(Principal principal, @PathVariable int id) {
+    @PostMapping("/user/add/fav/word")
+    public String addToUserFavLib(Principal principal, @RequestParam int id) {
         // {"name": "Favourite", "listOfWords": []}
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
