@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode
 @ToString
+@AllArgsConstructor
 public class CustomLib {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

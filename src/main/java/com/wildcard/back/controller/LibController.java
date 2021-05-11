@@ -3,6 +3,7 @@ package com.wildcard.back.controller;
 import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.models.Lib;
 import com.wildcard.back.service.QueryService;
+import com.wildcard.back.util.Constants;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,9 +40,12 @@ public class LibController {
     }
 
     @PostMapping("/lib/add")
-    public void addLib(@RequestParam String name) {
-        String nameRequest = Validation.sentenceValidation(name);
-        if(nameRequest != null) libDAO.save(new Lib(nameRequest));
+    public String addLib(@RequestParam String name) {
+        String nameRequest = null;
+        if(name != null && !name.isEmpty()) nameRequest = Validation.sentenceValidation(name);
+        if(nameRequest == null) return Constants.LIB_NAME_DOESNT_FIT;
+        libDAO.save(new Lib(nameRequest));
+        return Constants.LIB_SAVE_SUCCESS;
     }
 
     @GetMapping("/lib/{id}/get")
@@ -58,16 +62,16 @@ public class LibController {
     }
 
     @PatchMapping("/lib/{id}/update")
-    public void updateLib(@PathVariable int id,
+    public String updateLib(@PathVariable int id,
                           @RequestParam String name) {
         Lib libObj = libDAO.getOne(id);
-        if(!libObj.getName().equals(name)) {
+        if(name != null && !name.isEmpty() && !libObj.getName().equals(name)) {
             String nameRequest = Validation.sentenceValidation(name);
-            if(nameRequest != null) {
+            if(nameRequest == null) return Constants.LIB_UPDATE_UNSUCCESS;
                 libObj.setName(nameRequest);
                 libDAO.save(libObj);
-            }
         }
+        return Constants.LIB_UPDATE_SUCCESS;
     }
 
     @GetMapping("/libs/get")

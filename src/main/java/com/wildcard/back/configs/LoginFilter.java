@@ -26,6 +26,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         setAuthenticationManager(authenticationManager);
         this.userDAO = userDAO;
     }
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response){
         User user = null;
@@ -35,19 +36,21 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             e.printStackTrace();
         }
         Authentication authenticate = null;
-//        if (user != null && user.isEnabled()) {
+
+        if (user != null && userDAO.findUserByUsername(user.getUsername()) != null) {
             authenticate = getAuthenticationManager().authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-//        }
+        }
+        //TODO что делать если authenticate == null (в случае правильного юзера и неправильного пароля вызовется
+        //unsuccessfulAuthentication, в случае неправильного юзера вернется налл и в локалсторадж сетнется андефайнд
         return authenticate;
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-//        Date date = Date.from(LocalDateTime.now().plus(1, ChronoUnit.MINUTES).toInstant(ZoneOffset.ofHours(1)));
+        System.out.println("rititit");
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
-//                .setExpiration(date)
                 .signWith(SignatureAlgorithm.HS512, "WildCard".getBytes())
                 .compact();
         User user = userDAO.findUserByUsername(authResult.getName());
@@ -60,9 +63,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
-//    @Override
-//    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-//        super.unsuccessfulAuthentication(request, response, failed);
-//        System.out.println("User not found");
-//    }
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        super.unsuccessfulAuthentication(request, response, failed);
+        System.out.println("User not found");
+    }
+
 }

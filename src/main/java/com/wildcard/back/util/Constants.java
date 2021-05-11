@@ -28,6 +28,11 @@ public class Constants {
     public static final String WORD_UPDATE_UNSUCCESS = "Слово не було оновлено";
     public static final String WORD_SAVE_SUCCESS = "Слово успішно додано";
     public static final String WORD_SAVE_UNSUCCESS = "Слово не було додано";
+    public static final String LIB_NAME_DOESNT_FIT = "Перевірте правильність написаного у полі Lib name";
+    public static final String LIB_SAVE_SUCCESS = "Бібліотека успішно додана";
+    public static final String LIB_UPDATE_SUCCESS = "Бібліотека успішно оновлена";
+    public static final String LIB_UPDATE_UNSUCCESS = "Бібліотека не була оновлена";
+
 
 
     private Constants() {}

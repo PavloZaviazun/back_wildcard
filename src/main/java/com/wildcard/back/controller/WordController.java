@@ -91,49 +91,40 @@ public class WordController {
         Word wordObj = wordDAO.getOne(id);
         boolean wasUpdated = false;
 
-        if(!wordObj.getWord().equals(word)) {
+        if(word != null && !word.isEmpty() && !wordObj.getWord().equals(word)) {
             String wordRequest = Validation.wordValidation(word);
             if(wordRequest == null) return Constants.WORD_DOESNT_FIT;
-            else {
-                wordObj.setWord(wordRequest);
-                wasUpdated = true;
-            }
+            wordObj.setWord(wordRequest);
+            wasUpdated = true;
         }
 
         if(!wordObj.getPartOfSpeech().equals(PartOfSpeech.valueOf(partOfSpeech.toUpperCase()))) {
             PartOfSpeech partOfSpeechRequest = Validation.partOfSpeechValidation(partOfSpeech.toUpperCase());
             if(partOfSpeechRequest == null) return Constants.PART_OF_SPEECH_DOESNT_FIT;
-            else {
-                wordObj.setPartOfSpeech(partOfSpeechRequest);
-                wasUpdated = true;
-            }
+            wordObj.setPartOfSpeech(partOfSpeechRequest);
+            wasUpdated = true;
         }
 
-        if(!wordObj.getDescription().equals(description)) {
+        if(description != null && !description.isEmpty() && !wordObj.getDescription().equals(description)) {
             String descriptionRequest = Validation.sentenceValidation(description);
             if(descriptionRequest == null) return Constants.DESCRIPTION_DOESNT_FIT;
-            else {
-                wordObj.setDescription(descriptionRequest);
-                wasUpdated = true;
-            }
+            wordObj.setDescription(descriptionRequest);
+            wasUpdated = true;
         }
 
-        if(!wordObj.getExample().equals(example)) {
+        if(example != null && !example.isEmpty() && !wordObj.getExample().equals(example)) {
             String exampleRequest = Validation.sentenceValidation(example);
             if(exampleRequest == null) return Constants.EXAMPLE_DOESNT_FIT;
-            else {
-                wordObj.setExample(exampleRequest);
-                wasUpdated = true;
-            }
+            wordObj.setExample(exampleRequest);
+            wasUpdated = true;
+
         }
 
-        if(!wordObj.getTranslation().equals(translation)) {
+        if(translation != null && !translation.isEmpty() && !wordObj.getTranslation().equals(translation)) {
             String translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
             if(translationRequest == null) return Constants.TRANSLATION_DOESNT_FIT;
-            else {
-                wordObj.setTranslation(translationRequest);
-                wasUpdated = true;
-            }
+            wordObj.setTranslation(translationRequest);
+            wasUpdated = true;
         }
 
         if(wasUpdated) {
@@ -152,25 +143,30 @@ public class WordController {
                               @RequestParam String translation) {
 
         Word wordObj = new Word();
-        String wordRequest = Validation.wordValidation(word);
+
+        String wordRequest = null;
+        if(word != null && !word.isEmpty()) wordRequest = Validation.wordValidation(word);
         if(wordRequest == null) return Constants.WORD_DOESNT_FIT;
-            wordObj.setWord(wordRequest);
+        wordObj.setWord(wordRequest);
 
         PartOfSpeech partOfSpeechRequest = Validation.partOfSpeechValidation(partOfSpeech.toUpperCase());
         if(partOfSpeechRequest == null) return Constants.PART_OF_SPEECH_DOESNT_FIT;
-            wordObj.setPartOfSpeech(partOfSpeechRequest);
+        wordObj.setPartOfSpeech(partOfSpeechRequest);
 
-        String descriptionRequest = Validation.sentenceValidation(description);
+        String descriptionRequest = null;
+        if(description != null && !description.isEmpty()) descriptionRequest = Validation.sentenceValidation(description);
         if(descriptionRequest == null) return Constants.DESCRIPTION_DOESNT_FIT;
-            wordObj.setDescription(descriptionRequest);
+        wordObj.setDescription(descriptionRequest);
 
-        String exampleRequest = Validation.sentenceValidation(example);
+        String exampleRequest = null;
+        if(example != null && !example.isEmpty()) exampleRequest = Validation.sentenceValidation(example);
         if(exampleRequest == null) return Constants.EXAMPLE_DOESNT_FIT;
-            wordObj.setExample(exampleRequest);
+        wordObj.setExample(exampleRequest);
 
-        String translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
-        if(translationRequest != null) return Constants.TRANSLATION_DOESNT_FIT;
-            wordObj.setTranslation(translationRequest);
+        String translationRequest = null;
+        if(translation != null && !translation.isEmpty()) translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
+        if(translationRequest == null) return Constants.TRANSLATION_DOESNT_FIT;
+        wordObj.setTranslation(translationRequest);
 
         if(wordObj.getWord() != null && wordObj.getPartOfSpeech() != null
             && wordObj.getDescription() != null && wordObj.getExample() != null

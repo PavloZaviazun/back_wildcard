@@ -37,7 +37,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private Set <AuthToken> authTokens = new HashSet <>();
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<CustomLib> customLibs;
     @ManyToMany
     @JoinTable(name = "user_lib",

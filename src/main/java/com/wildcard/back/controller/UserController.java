@@ -13,8 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Locale;
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -150,11 +148,12 @@ public class UserController {
         return userDAO.getUsersWP(PageRequest.of(page, 20));
     }
 
-    @GetMapping("/user/add/word/{id}")
+    @PostMapping("/user/add/word/{id}")
     public String addToUserFavLib(Principal principal, @PathVariable int id) {
         //insert into user_fav_lib (id_user, fav_lib)
         //values  (1, '{"name": "favourite", "listOfWords": []}');
         User user = userDAO.findUserByUsername(principal.getName());
+
         return "";
 
     }
