@@ -170,6 +170,9 @@ public class UserController {
             FavLib favLib = obj.readValue(customLib.getCustomLib(), FavLib.class);
             List<Integer> listOfWords = favLib.getListOfWords();
             if (wordDAO.findById(id).isPresent()) {
+                for (Integer wordId : listOfWords) {
+                    if (wordId == id) return Constants.WORD_IS_PRESENT_IN_FAV;
+                }
                 listOfWords.add(id);
                 customLib.setCustomLib(favLib.toString());
                 customLibDAO.save(customLib);
@@ -189,6 +192,7 @@ public class UserController {
         try {
             FavLib favLib = obj.readValue(customLib.getCustomLib(), FavLib.class);
             List<Integer> listOfWords = favLib.getListOfWords();
+            if (!listOfWords.contains(id)) return Constants.WORD_IS_ABSENT_IN_FAV;
             listOfWords.remove(Integer.valueOf(id));
             customLib.setCustomLib(favLib.toString());
             customLibDAO.save(customLib);

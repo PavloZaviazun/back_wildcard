@@ -39,6 +39,6 @@ public class MainController {
                                @RequestParam String theme,
                                @RequestParam String message) {
         mailService.sendFeedback(email, theme, message);
-        return "получено";
+        return "Ваше повідомлення отримано, дякуємо за зворотній зв'язок";
     }
 }
