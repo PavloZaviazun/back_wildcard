@@ -226,6 +226,33 @@ public class UserController {
         return favWords;
     }
 
+    @GetMapping("/user/get/customlibids")
+    public List<Integer> getUserFavLibIds(Principal principal) {
+        int userId = userDAO.findUserByUsername(principal.getName()).getId();
+        CustomLib customLib = customLibDAO.findByUserId(userId);
+        ObjectMapper obj = new ObjectMapper();
+        List<Integer> favWords = new ArrayList<>();
+        try {
+            FavLib favLib = obj.readValue(customLib.getCustomLib(), FavLib.class);
+            List<Integer> listOfWords = favLib.getListOfWords();
+            List<Integer> newListOfWords = favLib.getListOfWords();
+            for (int a = 0; a < listOfWords.size(); a++) {
+                int wordId = listOfWords.get(a);
+                if (wordDAO.findById(wordId).isPresent()) {
+                    favWords.add(wordDAO.findById(wordId).get().getId());
+                } else {
+                    newListOfWords.remove(Integer.valueOf(wordId));
+                }
+            }
+            favLib.setListOfWords(newListOfWords);
+            customLib.setCustomLib(favLib.toString());
+            customLibDAO.save(customLib);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return favWords;
+    }
+
     @PostMapping("/user/add/favlib/{id}")
     public String addUserLib(Principal principal, @PathVariable int id) {
         User user = userDAO.findUserByUsername(principal.getName());
