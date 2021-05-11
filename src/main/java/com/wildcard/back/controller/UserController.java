@@ -128,7 +128,6 @@ public class UserController {
     }
 
     @GetMapping("/user/get")
-    @ResponseBody
     public User getUser(Principal principal) {
         return userDAO.findUserByUsername(principal.getName());
     }
@@ -150,4 +149,14 @@ public class UserController {
     public Page<User> getUsers(@PathVariable int page) {
         return userDAO.getUsersWP(PageRequest.of(page, 20));
     }
+
+    @GetMapping("/user/add/word/{id}")
+    public String addToUserFavLib(Principal principal, @PathVariable int id) {
+        //insert into user_fav_lib (id_user, fav_lib)
+        //values  (1, '{"name": "favourite", "listOfWords": []}');
+        User user = userDAO.findUserByUsername(principal.getName());
+        return "";
+
+    }
+
 }

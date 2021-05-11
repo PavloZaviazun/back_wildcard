@@ -187,7 +187,7 @@ public class WordController {
     }
 
     @PostMapping("/lib/{idLib}/add")
-    public void addNewWordToLib(@PathVariable int idLib,
+    public String addNewWordToLib(@PathVariable int idLib,
                                 @RequestParam String word,
                                 @RequestParam String partOfSpeech,
                                 @RequestParam String description,
@@ -196,18 +196,20 @@ public class WordController {
                                 @RequestParam String translation) {
         addWord(word, partOfSpeech, description, example, image,translation);
         Word wordObj = wordDAO.findByWordAndPartOfSpeech(word, PartOfSpeech.valueOf(partOfSpeech.toUpperCase()));
-        System.out.println(wordObj);
         if(libDAO.findById(idLib).isPresent()) {
             Lib lib = libDAO.findById(idLib).get();
             List <Word> words = lib.getWords();
             words.add(wordObj);
             lib.setWords(words);
             libDAO.save(lib);
+            return Constants.WORD_SAVE_SUCCESS;
         }
+        return Constants.WORD_SAVE_UNSUCCESS;
+
     }
 
     @PostMapping("/lib/{idLib}/{idWord}/add")
-    public void addExistWordToLib(@PathVariable int idLib,
+    public String addExistWordToLib(@PathVariable int idLib,
                                   @PathVariable int idWord) {
         if(libDAO.findById(idLib).isPresent() && wordDAO.findById(idWord).isPresent()) {
             Lib lib = libDAO.findById(idLib).get();
@@ -216,8 +218,8 @@ public class WordController {
             words.add(wordObj);
             lib.setWords(words);
             libDAO.save(lib);
+            return Constants.WORD_SAVE_SUCCESS;
         }
-
+        return Constants.WORD_SAVE_UNSUCCESS;
     }
-
 }
