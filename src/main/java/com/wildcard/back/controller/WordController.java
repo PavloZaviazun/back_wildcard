@@ -187,10 +187,10 @@ public class WordController {
         }
 
         if(wordObj.getWord() != null && wordObj.getPartOfSpeech() != null
-            && wordObj.getDescription() != null && wordObj.getExample() != null
-            && wordObj.getTranslation() != null) {
-                wordDAO.save(wordObj);
-                return Constants.WORD_SAVE_SUCCESS;
+                && wordObj.getDescription() != null && wordObj.getExample() != null
+                && wordObj.getTranslation() != null) {
+            wordDAO.save(wordObj);
+            return Constants.WORD_SAVE_SUCCESS;
         }
         return Constants.WORD_SAVE_UNSUCCESS;
     }

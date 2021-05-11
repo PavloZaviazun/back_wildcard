@@ -42,8 +42,10 @@ public class Constants {
     public static final String LIB_UPDATE_UNSUCCESS = "Бібліотека не була оновлена";
     public static final String WORD_ADDED_TO_FAV = "Слово додано до бібліотеки обраних";
     public static final String WORD_NOT_ADDED_TO_FAV = "Слово не було додано до бібліотеки обраних";
+    public static final String WORD_IS_PRESENT_IN_FAV = "Слово вже є у бібліотеці обраних";
     public static final String WORD_DELETED_FROM_FAV = "Слово видалено з бібліотеки обраних";
     public static final String WORD_NOT_DELETED_FROM_FAV = "Слово не було видалено з бібліотеки обраних";
+    public static final String WORD_IS_ABSENT_IN_FAV = "Такого слова немає у бібліотеці обраних";
     public static final String LIB_ADDED_TO_FAV = "Бібліотеку додано в обране";
     public static final String LIB_NOT_ADDED_TO_FAV = "Бібліотеку не було додано в обране";
     public static final String LIB_DELETED_FROM_FAV = "Бібліотеку видалено з обраного";
