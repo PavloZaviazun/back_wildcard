@@ -1,7 +1,14 @@
 package com.wildcard.back.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wildcard.back.dao.CustomLibDAO;
 import com.wildcard.back.dao.UserDAO;
+import com.wildcard.back.dao.WordDAO;
+import com.wildcard.back.models.CustomLib;
+import com.wildcard.back.models.FavLib;
 import com.wildcard.back.models.User;
+import com.wildcard.back.models.Word;
 import com.wildcard.back.service.MailService;
 import com.wildcard.back.util.Constants;
 import com.wildcard.back.util.NativeLang;
@@ -9,22 +16,27 @@ import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
 public class UserController {
     private UserDAO userDAO;
+    private WordDAO wordDAO;
     private PasswordEncoder passwordEncoder;
     private MailService mailService;
+    CustomLibDAO customLibDAO;
 
     @PostMapping("/register")
     public String register(@RequestParam String email,
-                         @RequestParam String password,
-                         @RequestParam String nativeLang) {
+                           @RequestParam String password,
+                           @RequestParam String nativeLang) {
         if (userDAO.findByEmail(email) != null) return Constants.USER_EXISTS_ALREADY;
         User userObj = new User();
         String passwordRequest = Validation.oneStepValidation(password, Validation.PASSWORD_PATTERN);
@@ -85,8 +97,8 @@ public class UserController {
 
     @PatchMapping("/user/{id}/update")
     public String updateUser(@PathVariable int id,
-                           @RequestParam String email,
-                           @RequestParam String nativeLang) {
+                             @RequestParam String email,
+                             @RequestParam String nativeLang) {
 
         User userObj = userDAO.getOne(id);
         boolean wasUpdated = false;
@@ -101,11 +113,11 @@ public class UserController {
 //        }
 
         if (!userObj.getEmail().equals(email)) {
-            String emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
+            String emailRequest = null;
+            if (email != null && !email.isEmpty())
+                emailRequest = Validation.oneStepValidation(email, Validation.EMAIL_PATTERN);
             if (emailRequest == null) return Constants.EMAIL_DOESNT_FIT;
-            else {
-                mailService.sendEmailToChangeMail(email, id);
-            }
+            mailService.sendEmailToChangeMail(email, id);
         }
 
         if (!userObj.getNativeLang().equals(NativeLang.valueOf(nativeLang))) {
@@ -148,14 +160,70 @@ public class UserController {
         return userDAO.getUsersWP(PageRequest.of(page, 20));
     }
 
-    @PostMapping("/user/add/word/{id}")
+    @PostMapping("/user/add/fav/word/{id}")
     public String addToUserFavLib(Principal principal, @PathVariable int id) {
         //insert into user_fav_lib (id_user, fav_lib)
-        //values  (1, '{"name": "favourite", "listOfWords": []}');
-        User user = userDAO.findUserByUsername(principal.getName());
-
-        return "";
-
+        //values  (1, '{"name": "Favourite", "listOfWords": []}');
+        int userId = userDAO.findUserByUsername(principal.getName()).getId();
+        CustomLib customLib = customLibDAO.findByUserId(userId);
+        ObjectMapper obj = new ObjectMapper();
+        try {
+            FavLib favLib = obj.readValue(customLib.getFavLib(), FavLib.class);
+            List<Integer> listOfWords = favLib.getListOfWords();
+            if (wordDAO.findById(id).isPresent()) {
+                listOfWords.add(id);
+                customLib.setFavLib(favLib.toString());
+                customLibDAO.save(customLib);
+                return "VSE OK";
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return "VSE NE OK";
     }
 
+    @DeleteMapping("/user/delete/fav/word/{id}")
+    public String deleteFromUserFavLib(Principal principal, @PathVariable int id) {
+        int userId = userDAO.findUserByUsername(principal.getName()).getId();
+        CustomLib customLib = customLibDAO.findByUserId(userId);
+        ObjectMapper obj = new ObjectMapper();
+        try {
+            FavLib favLib = obj.readValue(customLib.getFavLib(), FavLib.class);
+            List<Integer> listOfWords = favLib.getListOfWords();
+            listOfWords.remove(Integer.valueOf(id));
+            customLib.setFavLib(favLib.toString());
+            customLibDAO.save(customLib);
+            return "VSE OK";
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return "VSE NE OK";
+    }
+
+    @GetMapping("/user/favlib")
+    public List<Word> getUserFavLib(Principal principal) {
+        int userId = userDAO.findUserByUsername(principal.getName()).getId();
+        CustomLib customLib = customLibDAO.findByUserId(userId);
+        ObjectMapper obj = new ObjectMapper();
+        List<Word> favWords = new ArrayList<>();
+        try {
+            FavLib favLib = obj.readValue(customLib.getFavLib(), FavLib.class);
+            List<Integer> listOfWords = favLib.getListOfWords();
+            List<Integer> newListOfWords = favLib.getListOfWords();
+            for (int a = 0; a < listOfWords.size(); a++) {
+                int wordId = listOfWords.get(a);
+                if (wordDAO.findById(wordId).isPresent()) {
+                    favWords.add(wordDAO.findById(wordId).get());
+                } else {
+                    newListOfWords.remove(Integer.valueOf(wordId));
+                }
+            }
+            favLib.setListOfWords(newListOfWords);
+            customLib.setFavLib(favLib.toString());
+            customLibDAO.save(customLib);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return favWords;
+    }
 }

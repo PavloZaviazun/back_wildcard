@@ -48,7 +48,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        System.out.println("rititit");
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .signWith(SignatureAlgorithm.HS512, "WildCard".getBytes())

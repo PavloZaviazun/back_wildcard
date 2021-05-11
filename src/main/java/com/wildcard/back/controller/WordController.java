@@ -91,8 +91,9 @@ public class WordController {
         Word wordObj = wordDAO.getOne(id);
         boolean wasUpdated = false;
 
-        if(word != null && !word.isEmpty() && !wordObj.getWord().equals(word)) {
-            String wordRequest = Validation.wordValidation(word);
+        if(!wordObj.getWord().equals(word)) {
+            String wordRequest = null;
+            if(word != null && !word.isEmpty()) wordRequest = Validation.wordValidation(word);
             if(wordRequest == null) return Constants.WORD_DOESNT_FIT;
             wordObj.setWord(wordRequest);
             wasUpdated = true;
@@ -105,23 +106,26 @@ public class WordController {
             wasUpdated = true;
         }
 
-        if(description != null && !description.isEmpty() && !wordObj.getDescription().equals(description)) {
-            String descriptionRequest = Validation.sentenceValidation(description);
+        if(!wordObj.getDescription().equals(description)) {
+            String descriptionRequest = null;
+            if(description != null && !description.isEmpty()) descriptionRequest = Validation.sentenceValidation(description);
             if(descriptionRequest == null) return Constants.DESCRIPTION_DOESNT_FIT;
             wordObj.setDescription(descriptionRequest);
             wasUpdated = true;
         }
 
-        if(example != null && !example.isEmpty() && !wordObj.getExample().equals(example)) {
-            String exampleRequest = Validation.sentenceValidation(example);
+        if(!wordObj.getExample().equals(example)) {
+            String exampleRequest = null;
+            if(example != null && !example.isEmpty()) exampleRequest = Validation.sentenceValidation(example);
             if(exampleRequest == null) return Constants.EXAMPLE_DOESNT_FIT;
             wordObj.setExample(exampleRequest);
             wasUpdated = true;
 
         }
 
-        if(translation != null && !translation.isEmpty() && !wordObj.getTranslation().equals(translation)) {
-            String translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
+        if(!wordObj.getTranslation().equals(translation)) {
+            String translationRequest = null;
+            if(translation != null && !translation.isEmpty()) translationRequest = Validation.oneStepValidation(translation, Validation.JSON_PATTERN);
             if(translationRequest == null) return Constants.TRANSLATION_DOESNT_FIT;
             wordObj.setTranslation(translationRequest);
             wasUpdated = true;

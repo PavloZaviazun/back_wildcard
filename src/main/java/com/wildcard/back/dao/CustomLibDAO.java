@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories
 public interface CustomLibDAO extends JpaRepository<CustomLib, Integer> {
+    CustomLib findByUserId(int i);
 }
+

@@ -65,11 +65,12 @@ public class LibController {
     public String updateLib(@PathVariable int id,
                           @RequestParam String name) {
         Lib libObj = libDAO.getOne(id);
-        if(name != null && !name.isEmpty() && !libObj.getName().equals(name)) {
-            String nameRequest = Validation.sentenceValidation(name);
+        if(!libObj.getName().equals(name)) {
+            String nameRequest = null;
+            if(name != null && !name.isEmpty()) nameRequest = Validation.sentenceValidation(name);
             if(nameRequest == null) return Constants.LIB_UPDATE_UNSUCCESS;
-                libObj.setName(nameRequest);
-                libDAO.save(libObj);
+            libObj.setName(nameRequest);
+            libDAO.save(libObj);
         }
         return Constants.LIB_UPDATE_SUCCESS;
     }

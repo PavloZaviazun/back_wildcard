@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Entity
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString(exclude = {"libs", "authTokens"})
+@ToString(exclude = {"libs", "authTokens", "customLibs"})
 @Getter
 @Setter
 public class User implements UserDetails {
@@ -37,8 +37,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private Set <AuthToken> authTokens = new HashSet <>();
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<CustomLib> customLibs;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private Set<CustomLib> customLibs = new HashSet<>(Arrays.asList(new CustomLib()));
     @ManyToMany
     @JoinTable(name = "user_lib",
     joinColumns = @JoinColumn(name = "user"),
