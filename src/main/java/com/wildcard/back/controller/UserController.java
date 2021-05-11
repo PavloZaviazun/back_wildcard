@@ -3,12 +3,10 @@ package com.wildcard.back.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wildcard.back.dao.CustomLibDAO;
+import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.dao.UserDAO;
 import com.wildcard.back.dao.WordDAO;
-import com.wildcard.back.models.CustomLib;
-import com.wildcard.back.models.FavLib;
-import com.wildcard.back.models.User;
-import com.wildcard.back.models.Word;
+import com.wildcard.back.models.*;
 import com.wildcard.back.service.MailService;
 import com.wildcard.back.util.Constants;
 import com.wildcard.back.util.NativeLang;
@@ -23,12 +21,14 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
 public class UserController {
     private UserDAO userDAO;
     private WordDAO wordDAO;
+    private LibDAO libDAO;
     private PasswordEncoder passwordEncoder;
     private MailService mailService;
     CustomLibDAO customLibDAO;
@@ -162,8 +162,7 @@ public class UserController {
 
     @PostMapping("/user/add/fav/word/{id}")
     public String addToUserFavLib(Principal principal, @PathVariable int id) {
-        //insert into user_fav_lib (id_user, fav_lib)
-        //values  (1, '{"name": "Favourite", "listOfWords": []}');
+        // {"name": "Favourite", "listOfWords": []}
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
         ObjectMapper obj = new ObjectMapper();
@@ -225,5 +224,39 @@ public class UserController {
             e.printStackTrace();
         }
         return favWords;
+    }
+
+    @PostMapping("/user/add/lib/{id}")
+    public String addUserLib(Principal principal, @PathVariable int id) {
+        User user = userDAO.findUserByUsername(principal.getName());
+        List<Lib> libs = user.getLibs();
+        if (libDAO.findById(id).isPresent()){
+            Lib lib = libDAO.findById(id).get();
+            libs.add(lib);
+            user.setLibs(libs);
+            userDAO.save(user);
+            return "VSE OK";
+        }
+        return "VSE NE OK";
+    }
+
+    @PostMapping("/user/delete/lib/{id}")
+    public String deleteUserLib(Principal principal, @PathVariable int id) {
+        User user = userDAO.findUserByUsername(principal.getName());
+        List<Lib> libs = user.getLibs();
+        if (libDAO.findById(id).isPresent()){
+            Lib lib = libDAO.findById(id).get();
+            libs.remove(lib);
+            user.setLibs(libs);
+            userDAO.save(user);
+            return "VSE OK";
+        }
+        return "VSE NE OK";
+    }
+
+    @PostMapping("/user/get/libs")
+    public List<Lib> getUserLibs(Principal principal) {
+        User user = userDAO.findUserByUsername(principal.getName());
+        return user.getLibs();
     }
 }
