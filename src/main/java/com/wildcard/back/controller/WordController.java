@@ -194,7 +194,6 @@ public class WordController {
         if(exampleRequest == null) return Constants.EXAMPLE_DOESNT_FIT;
         wordObj.setExample(exampleRequest);
 
-
         Translation translationObj = new Translation(translationRu, translationUa);
         String translation = translationObj.toString();
 
