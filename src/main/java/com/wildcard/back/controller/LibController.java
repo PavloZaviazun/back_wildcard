@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,6 +71,7 @@ public class LibController {
             if(name != null && !name.isEmpty()) nameRequest = Validation.sentenceValidation(name);
             if(nameRequest == null) return Constants.LIB_UPDATE_UNSUCCESS;
             libObj.setName(nameRequest);
+            libObj.setUpdateAt(LocalDateTime.now());
             libDAO.save(libObj);
         }
         return Constants.LIB_UPDATE_SUCCESS;

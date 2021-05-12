@@ -1,9 +1,11 @@
 package com.wildcard.back.controller;
 
 import com.wildcard.back.dao.LibDAO;
+import com.wildcard.back.dao.UserDAO;
 import com.wildcard.back.dao.WordDAO;
 import com.wildcard.back.models.Lib;
 import com.wildcard.back.models.Translation;
+import com.wildcard.back.models.User;
 import com.wildcard.back.service.MainService;
 import com.wildcard.back.util.Constants;
 import com.wildcard.back.util.PartOfSpeech;
@@ -14,10 +16,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
+import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +31,7 @@ import java.util.List;
 public class WordController {
     private LibDAO libDAO;
     private WordDAO wordDAO;
+    private UserDAO userDAO;
     private EntityManager entityManager;
 
     @GetMapping("/searchByWord/{word}/page/{page}")
@@ -89,7 +95,8 @@ public class WordController {
                            @RequestParam String partOfSpeech,
                            @RequestParam String description,
                            @RequestParam String example,
-                           @RequestParam String translation,
+                           @RequestParam String translationRu,
+                           @RequestParam String translationUa,
                            @RequestParam MultipartFile image) {
         Word wordObj = wordDAO.getOne(id);
         boolean wasUpdated = false;
@@ -126,11 +133,21 @@ public class WordController {
 
         }
 
+        Translation translationObj = new Translation(translationRu, translationUa);
+        String translation = translationObj.toString();
+
         if(!wordObj.getTranslation().equals(translation)) {
             String translationRequest = null;
-            if(translation != null && !translation.isEmpty()) translationRequest = Validation.oneStepValidation(translation, Constants.JSON_PATTERN);
-            if(translationRequest == null) return Constants.TRANSLATION_DOESNT_FIT;
+            if (translation != null && !translation.isEmpty()) translationRequest = Validation.oneStepValidation(translation, Constants.JSON_PATTERN);
+            if (translationRequest == null) return Constants.TRANSLATION_DOESNT_FIT;
             wordObj.setTranslation(translationRequest);
+            wasUpdated = true;
+        }
+
+        if(image != null && !image.isEmpty()) {
+            String imageName = image.getOriginalFilename();
+            wordObj.setImage(imageName);
+            MainService.saveImage(image);
             wasUpdated = true;
         }
 
@@ -142,16 +159,21 @@ public class WordController {
     }
 
     @PostMapping("/word/add")
-    public String addWord(@RequestParam String word,
+    public String addWord(Principal principal,
+                          @RequestParam String word,
                           @RequestParam String partOfSpeech,
                           @RequestParam String description,
                           @RequestParam String example,
                           @RequestParam String translationRu,
                           @RequestParam String translationUa,
                           @RequestParam MultipartFile image) {
+        User user = userDAO.findUserByUsername(principal.getName());
+        List<? extends GrantedAuthority> collect = new ArrayList<>(user.getAuthorities());
 
         Word wordObj = new Word();
-
+        for (GrantedAuthority grantedAuthority : collect) {
+            if (grantedAuthority.toString().equals("ROLE_ADMIN")) wordObj.setApproved(true);
+        }
         String wordRequest = null;
         if(word != null && !word.isEmpty()) wordRequest = Validation.wordValidation(word);
         if(wordRequest == null) return Constants.WORD_DOESNT_FIT;
@@ -201,7 +223,8 @@ public class WordController {
     }
 
     @PostMapping("/lib/{idLib}/add")
-    public String addNewWordToLib(@PathVariable int idLib,
+    public String addNewWordToLib(Principal principal,
+                                  @PathVariable int idLib,
                                   @RequestParam String word,
                                   @RequestParam String partOfSpeech,
                                   @RequestParam String description,
@@ -209,13 +232,14 @@ public class WordController {
                                   @RequestParam String translationRu,
                                   @RequestParam String translationUa,
                                   @RequestParam MultipartFile image) {
-        addWord(word, partOfSpeech, description, example, translationRu, translationUa, image);
+        addWord(principal, word, partOfSpeech, description, example, translationRu, translationUa, image);
         Word wordObj = wordDAO.findByWordAndPartOfSpeech(word, PartOfSpeech.valueOf(partOfSpeech.toUpperCase()));
         if(libDAO.findById(idLib).isPresent()) {
             Lib lib = libDAO.findById(idLib).get();
             List <Word> words = lib.getWords();
             words.add(wordObj);
             lib.setWords(words);
+            lib.setUpdateAt(LocalDateTime.now());
             libDAO.save(lib);
             return Constants.WORD_SAVE_SUCCESS;
         }
@@ -232,6 +256,7 @@ public class WordController {
             List <Word> words = lib.getWords();
             words.add(wordObj);
             lib.setWords(words);
+            lib.setUpdateAt(LocalDateTime.now());
             libDAO.save(lib);
             return Constants.WORD_SAVE_SUCCESS;
         }

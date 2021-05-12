@@ -4,6 +4,9 @@ import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -31,8 +34,11 @@ public class Lib {
     inverseJoinColumns = @JoinColumn(name = "user"))
     @JsonIgnore
     private List<User> users;
+    private LocalDate creation;
+    private LocalDateTime updateAt;
 
     public Lib(String name) {
         this.name = name;
+        creation = LocalDate.now();
     }
 }
