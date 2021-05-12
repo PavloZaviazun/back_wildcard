@@ -71,7 +71,7 @@ public class LibController {
             if(name != null && !name.isEmpty()) nameRequest = Validation.sentenceValidation(name);
             if(nameRequest == null) return Constants.LIB_UPDATE_UNSUCCESS;
             libObj.setName(nameRequest);
-            libObj.setUpdateAt(LocalDateTime.now());
+            libObj.setUpdateDate(LocalDateTime.now());
             libDAO.save(libObj);
         }
         return Constants.LIB_UPDATE_SUCCESS;

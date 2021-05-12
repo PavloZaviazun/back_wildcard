@@ -34,11 +34,11 @@ public class Lib {
     inverseJoinColumns = @JoinColumn(name = "user"))
     @JsonIgnore
     private List<User> users;
-    private LocalDate creation;
-    private LocalDateTime updateAt;
+    private LocalDate createDate;
+    private LocalDateTime updateDate;
 
     public Lib(String name) {
         this.name = name;
-        creation = LocalDate.now();
+        createDate = LocalDate.now();
     }
 }

@@ -239,7 +239,7 @@ public class WordController {
             List <Word> words = lib.getWords();
             words.add(wordObj);
             lib.setWords(words);
-            lib.setUpdateAt(LocalDateTime.now());
+            lib.setUpdateDate(LocalDateTime.now());
             libDAO.save(lib);
             return Constants.WORD_SAVE_SUCCESS;
         }
@@ -256,7 +256,7 @@ public class WordController {
             List <Word> words = lib.getWords();
             words.add(wordObj);
             lib.setWords(words);
-            lib.setUpdateAt(LocalDateTime.now());
+            lib.setUpdateDate(LocalDateTime.now());
             libDAO.save(lib);
             return Constants.WORD_SAVE_SUCCESS;
         }
