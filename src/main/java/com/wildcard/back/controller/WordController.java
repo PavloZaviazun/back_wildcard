@@ -25,6 +25,7 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
@@ -220,6 +221,13 @@ public class WordController {
     @GetMapping("/words/get")
     public List<Word> getWords() {
         return wordDAO.findAll();
+    }
+
+    @GetMapping("/words/getnotapproved")
+    public List<Word> getWordsNotApproved() {
+        List<Word> all = wordDAO.findAll();
+        List<Word> collect = all.stream().filter(a -> !a.isApproved()).collect(Collectors.toList());
+        return collect;
     }
 
     @PostMapping("/lib/{idLib}/add")
