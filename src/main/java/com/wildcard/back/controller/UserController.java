@@ -99,7 +99,7 @@ public class UserController {
     @PatchMapping("/user/{id}/adminUpdate")
     public String adminUpdateUser(@PathVariable int id,
                                   @RequestParam String role,
-                                  @RequestParam (value = "isEnabled", required = false) String isEnabled) {
+                                  @RequestParam (value = "isEnabled", required = false) boolean isEnabled) {
         User userObj = userDAO.getOne(id);
         boolean wasUpdated = false;
 
@@ -107,12 +107,24 @@ public class UserController {
             if (!userObj.getRoles().get(0).toString().equals(role.toUpperCase())) {
                 Role roleRequest = Validation.roleValidation(role);
                 if (roleRequest != null) {
-                    userObj.setRoles(Role.valueOf(role.toUpperCase()));
+                    List <Role> roles = userObj.getRoles();
+                    roles.set(0, Role.valueOf(role.toUpperCase()));
+                    userObj.setRoles(roles);
                     wasUpdated = true;
                 }
             }
         }
-        return null;
+
+        if (userObj.isEnabled() != isEnabled) {
+            userObj.setEnabled(isEnabled);
+            wasUpdated = true;
+        }
+
+        if (wasUpdated) {
+            userDAO.save(userObj);
+            return Constants.USER_UPDATE;
+        }
+        return Constants.USER_NOT_UPDATE;
     }
 
     @PatchMapping("/user/{id}/update")
