@@ -2,10 +2,7 @@ package com.wildcard.back.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wildcard.back.dao.CustomLibDAO;
-import com.wildcard.back.dao.LibDAO;
-import com.wildcard.back.dao.UserDAO;
-import com.wildcard.back.dao.WordDAO;
+import com.wildcard.back.dao.*;
 import com.wildcard.back.models.*;
 import com.wildcard.back.service.MailService;
 import com.wildcard.back.util.Constants;
@@ -14,7 +11,6 @@ import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,7 +60,13 @@ public class UserController {
 
     @PostMapping("/login")
     public String login() {
-        return "Successfull logination";
+        return "Successful logination";
+    }
+
+    @GetMapping("/logout")
+    public String logout(Principal principal){
+        System.out.println(principal);
+        return "success logout";
     }
 
     @GetMapping("/activate/{id}")

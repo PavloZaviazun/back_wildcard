@@ -40,5 +40,6 @@ public class Lib {
     public Lib(String name) {
         this.name = name;
         createDate = LocalDate.now();
+        updateDate = LocalDateTime.now();
     }
 }
