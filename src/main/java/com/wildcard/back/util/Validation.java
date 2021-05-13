@@ -85,5 +85,15 @@ public class Validation {
         }
     }
 
+    public static Role roleValidation(String role) {
+        switch(role.toUpperCase()) {
+            case "ROLE_USER" : return Role.ROLE_USER;
+            case "ROLE_ADMIN" : return Role.ROLE_ADMIN;
+            default : {
+                System.out.println("Inappropriate role");
+                return null;
+            }
+        }
+    }
 
 }

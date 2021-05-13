@@ -18,11 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
 import java.util.Date;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
@@ -55,16 +51,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-//        Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date date = new Date();
-        long t = date.getTime();
-        Date expirationTime = new Date(t + 50000l); // set 50 seconds
-        Instant issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
-        Instant expiration = issuedAt.plus(1, ChronoUnit.MINUTES);
+        Date now = new Date();
+        Date exp = new Date(System.currentTimeMillis() + (1000*60)); // 30 seconds
+
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
-//                .setExpiration(expirationTime)
-                .setExpiration(Date.from(expiration))
+                .setIssuedAt(now)
+                .setNotBefore(now)
+                .setExpiration(exp)
                 .signWith(SignatureAlgorithm.HS512, "WildCard".getBytes())
                 .compact();
         User user = userDAO.findUserByUsername(authResult.getName());

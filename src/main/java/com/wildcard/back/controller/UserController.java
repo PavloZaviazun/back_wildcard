@@ -7,6 +7,7 @@ import com.wildcard.back.models.*;
 import com.wildcard.back.service.MailService;
 import com.wildcard.back.util.Constants;
 import com.wildcard.back.util.NativeLang;
+import com.wildcard.back.util.Role;
 import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -95,6 +96,37 @@ public class UserController {
             }
         }
         return Constants.USER_NOT_UPDATE_EMAIL;
+    }
+
+    @PatchMapping("/user/{id}/adminUpdate")
+    public String adminUpdateUser(@PathVariable int id,
+                                  @RequestParam String role,
+                                  @RequestParam (value = "isEnabled", required = false) boolean isEnabled) {
+        User userObj = userDAO.getOne(id);
+        boolean wasUpdated = false;
+
+        if (!userObj.getRoles().get(0).equals(Role.valueOf(role))) {
+            if (!userObj.getRoles().get(0).toString().equals(role.toUpperCase())) {
+                Role roleRequest = Validation.roleValidation(role);
+                if (roleRequest != null) {
+                    List <Role> roles = userObj.getRoles();
+                    roles.set(0, Role.valueOf(role.toUpperCase()));
+                    userObj.setRoles(roles);
+                    wasUpdated = true;
+                }
+            }
+        }
+
+        if (userObj.isEnabled() != isEnabled) {
+            userObj.setEnabled(isEnabled);
+            wasUpdated = true;
+        }
+
+        if (wasUpdated) {
+            userDAO.save(userObj);
+            return Constants.USER_UPDATE;
+        }
+        return Constants.USER_NOT_UPDATE;
     }
 
     @PatchMapping("/user/{id}/update")
