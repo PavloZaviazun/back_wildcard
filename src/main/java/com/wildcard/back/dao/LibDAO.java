@@ -17,4 +17,6 @@ public interface LibDAO extends JpaRepository<Lib, Integer> {
     List <Lib> searchLib(@Param("name") String name);
     @Query(Constants.GET_LIBS_WITH_PAGINATION)
     Page <Lib> getLibsWP(Pageable pageable);
+    @Query(Constants.FIND_ONE_LIB)
+    Lib findLib(@Param("name") String name);
 }

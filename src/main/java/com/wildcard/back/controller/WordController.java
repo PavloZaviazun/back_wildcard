@@ -77,6 +77,19 @@ public class WordController {
         return pageHolder;
     }
 
+    @GetMapping("/lib/{name}/words/get")
+    public List<Word> getLibALLWords(@PathVariable String name) {
+        Lib lib = libDAO.findLib(name);
+        List<Integer> resultList = new QueryService(entityManager).selectWordsId(lib.getId());
+        List<Word> list = new ArrayList<>();
+        for (Integer el : resultList) {
+            if (wordDAO.findById(el).isPresent()) {
+                list.add(wordDAO.findById(el).get());
+            }
+        }
+        return list;
+    }
+
     @GetMapping("/word/{id}/get")
     public Word getWord(@PathVariable int id) {
         if (wordDAO.findById(id).isPresent()) {
