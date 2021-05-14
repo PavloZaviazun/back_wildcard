@@ -5,16 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wildcard.back.dao.*;
 import com.wildcard.back.models.*;
 import com.wildcard.back.service.MailService;
-import com.wildcard.back.util.Constants;
-import com.wildcard.back.util.NativeLang;
-import com.wildcard.back.util.Role;
-import com.wildcard.back.util.Validation;
+import com.wildcard.back.service.MainService;
+import com.wildcard.back.util.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public String logout(Principal principal){
+    public String logout(Principal principal) {
         System.out.println(principal);
         return "success logout";
     }
@@ -101,7 +102,7 @@ public class UserController {
     @PatchMapping("/user/{id}/adminUpdate")
     public String adminUpdateUser(@PathVariable int id,
                                   @RequestParam String role,
-                                  @RequestParam (value = "isEnabled", required = false) boolean isEnabled) {
+                                  @RequestParam(value = "isEnabled", required = false) boolean isEnabled) {
         User userObj = userDAO.getOne(id);
         boolean wasUpdated = false;
 
@@ -109,7 +110,7 @@ public class UserController {
             if (!userObj.getRoles().get(0).toString().equals(role.toUpperCase())) {
                 Role roleRequest = Validation.roleValidation(role);
                 if (roleRequest != null) {
-                    List <Role> roles = userObj.getRoles();
+                    List<Role> roles = userObj.getRoles();
                     roles.set(0, Role.valueOf(role.toUpperCase()));
                     userObj.setRoles(roles);
                     wasUpdated = true;
@@ -218,6 +219,67 @@ public class UserController {
         return Constants.WORD_NOT_ADDED_TO_FAV;
     }
 
+    @PostMapping("/user/customlib/add/newword")
+    public String addToUserCustLibNewWord(Principal principal,
+                                          @RequestParam String word,
+                                          @RequestParam String partOfSpeech,
+                                          @RequestParam String description,
+                                          @RequestParam String example,
+                                          @RequestParam String translationRu,
+                                          @RequestParam String translationUa) throws IOException {
+        int userId = userDAO.findUserByUsername(principal.getName()).getId();
+        CustomLib customLib = customLibDAO.findByUserId(userId);
+        ObjectMapper obj = new ObjectMapper();
+        Word wordObj = new Word();
+
+        String wordRequest = null;
+        if (word != null && !word.isEmpty()) wordRequest = Validation.wordValidation(word);
+        if (wordRequest == null) return Constants.WORD_DOESNT_FIT;
+        wordObj.setWord(wordRequest);
+
+        PartOfSpeech partOfSpeechRequest = Validation.partOfSpeechValidation(partOfSpeech.toUpperCase());
+        if (partOfSpeechRequest == null) return Constants.PART_OF_SPEECH_DOESNT_FIT;
+        wordObj.setPartOfSpeech(partOfSpeechRequest);
+
+        String descriptionRequest = null;
+        if (description != null && !description.isEmpty())
+            descriptionRequest = Validation.sentenceValidation(description);
+        if (descriptionRequest == null) return Constants.DESCRIPTION_DOESNT_FIT;
+        wordObj.setDescription(descriptionRequest);
+
+        String exampleRequest = null;
+        if (example != null && !example.isEmpty()) exampleRequest = Validation.sentenceValidation(example);
+        if (exampleRequest == null) return Constants.EXAMPLE_DOESNT_FIT;
+        wordObj.setExample(exampleRequest);
+
+        Translation translationObj = new Translation(translationRu, translationUa);
+        String translation = translationObj.toString();
+
+        String translationRequest = null;
+        if (translation != null && !translation.isEmpty())
+            translationRequest = Validation.oneStepValidation(translation, Constants.JSON_PATTERN);
+        if (translationRequest == null) return Constants.TRANSLATION_DOESNT_FIT;
+        wordObj.setTranslation(translationRequest);
+
+        if (wordObj.getWord() != null && wordObj.getPartOfSpeech() != null
+                && wordObj.getDescription() != null && wordObj.getExample() != null
+                && wordObj.getTranslation() != null) {
+            wordDAO.save(wordObj);
+            try {
+                FavLib favLib = obj.readValue(customLib.getCustomLib(), FavLib.class);
+                List<Integer> listOfWords = favLib.getListOfWords();
+                Word added = wordDAO.findByWordAndPartOfSpeech(wordObj.getWord(), wordObj.getPartOfSpeech());
+                listOfWords.add(added.getId());
+                customLib.setCustomLib(favLib.toString());
+                customLibDAO.save(customLib);
+                return Constants.WORD_ADDED_TO_FAV;
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+        return Constants.WORD_NOT_ADDED_TO_FAV;
+    }
+
     @DeleteMapping("/user/customlib/word/{id}/delete")
     public String deleteFromUserFavLib(Principal principal, @PathVariable int id) {
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
@@ -237,7 +299,7 @@ public class UserController {
         return Constants.WORD_NOT_DELETED_FROM_FAV;
     }
 
-    @GetMapping("/user/get/customlib")
+    @GetMapping("/user/customlib/get")
     public List<Word> getUserFavLib(Principal principal) {
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
