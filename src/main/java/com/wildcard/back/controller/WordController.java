@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,8 +78,9 @@ public class WordController {
         return pageHolder;
     }
 
-    @GetMapping("/lib/{name}/words/get")
-    public List<Word> getLibALLWords(@PathVariable String name) {
+    @GetMapping("/lib/{name}/words/get/{shuffleFlag}")
+    public List<Word> getLibALLWords(@PathVariable String name,
+                                     @PathVariable boolean shuffleFlag) {
         Lib lib = libDAO.findLib(name);
         List<Integer> resultList = new QueryService(entityManager).selectWordsId(lib.getId());
         List<Word> list = new ArrayList<>();
@@ -87,6 +89,8 @@ public class WordController {
                 list.add(wordDAO.findById(el).get());
             }
         }
+        System.out.println(shuffleFlag);
+        if(shuffleFlag) Collections.shuffle(list);
         return list;
     }
 
