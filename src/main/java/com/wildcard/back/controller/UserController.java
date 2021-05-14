@@ -5,12 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wildcard.back.dao.*;
 import com.wildcard.back.models.*;
 import com.wildcard.back.service.MailService;
-import com.wildcard.back.service.MainService;
-import com.wildcard.back.util.*;
+import com.wildcard.back.util.Constants;
+import com.wildcard.back.util.NativeLang;
+import com.wildcard.back.util.Role;
+import com.wildcard.back.util.Validation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,8 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @AllArgsConstructor
 @RestController
@@ -102,7 +105,7 @@ public class UserController {
     @PatchMapping("/user/{id}/adminUpdate")
     public String adminUpdateUser(@PathVariable int id,
                                   @RequestParam String role,
-                                  @RequestParam(value = "isEnabled", required = false) boolean isEnabled) {
+                                  @RequestParam (value = "isEnabled", required = false) boolean isEnabled) {
         User userObj = userDAO.getOne(id);
         boolean wasUpdated = false;
 
@@ -110,7 +113,7 @@ public class UserController {
             if (!userObj.getRoles().get(0).toString().equals(role.toUpperCase())) {
                 Role roleRequest = Validation.roleValidation(role);
                 if (roleRequest != null) {
-                    List<Role> roles = userObj.getRoles();
+                    List <Role> roles = userObj.getRoles();
                     roles.set(0, Role.valueOf(role.toUpperCase()));
                     userObj.setRoles(roles);
                     wasUpdated = true;
@@ -195,8 +198,14 @@ public class UserController {
         return userDAO.getUsersWP(PageRequest.of(page, 20));
     }
 
-    @PostMapping("/user/add/customlib/word")
-    public String addToUserFavLib(Principal principal, @RequestParam int id) {
+    @PostMapping("/user/customlib/word/add")
+    public String addToUserCustomLib(Principal principal, @RequestBody String ident) {
+        //TODO Change approach @RequestBody
+        int id = 0;
+        Pattern pattern = Pattern.compile("[0-9]+");
+        Matcher matcher = pattern.matcher(ident);
+        if(matcher.find()) id = Integer.parseInt(matcher.group());
+
         // {"name": "Favourite", "listOfWords": []}
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
@@ -281,7 +290,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user/customlib/word/{id}/delete")
-    public String deleteFromUserFavLib(Principal principal, @PathVariable int id) {
+    public String deleteFromUserCustomLib(Principal principal, @PathVariable int id) {
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
         ObjectMapper obj = new ObjectMapper();
@@ -300,7 +309,7 @@ public class UserController {
     }
 
     @GetMapping("/user/customlib/get")
-    public List<Word> getUserFavLib(Principal principal) {
+    public List<Word> getUserCustomLib(Principal principal) {
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
         ObjectMapper obj = new ObjectMapper();
@@ -326,7 +335,7 @@ public class UserController {
         return favWords;
     }
 
-    @GetMapping("/user/get/customlibids")
+    @GetMapping("/user/customlibids/get")
     public List<Integer> getUserCustomLibIds(Principal principal) {
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
@@ -381,7 +390,7 @@ public class UserController {
         return Constants.LIB_NOT_DELETED_FROM_FAV;
     }
 
-    @GetMapping("/user/get/favlibs")
+    @GetMapping("/user/favlibs/get")
     public List<Lib> getUserLibs(Principal principal) {
         User user = userDAO.findUserByUsername(principal.getName());
         return user.getLibs();
