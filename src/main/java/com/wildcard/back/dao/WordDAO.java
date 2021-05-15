@@ -20,4 +20,6 @@ public interface WordDAO extends JpaRepository<Word, Integer> {
     Page<Word> searchByWord(@Param("word") String word, Pageable pageable);
     @Query(Constants.SEARCH_BY_LETTER)
     Page<Word> searchByLetter(@Param("letter") String letter, Pageable pageable);
+    @Query(Constants.GET_RANDOM_WORDS)
+    List<Word> getRandomWords();
 }

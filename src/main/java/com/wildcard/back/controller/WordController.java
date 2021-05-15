@@ -330,6 +330,13 @@ public class WordController {
         return wordDAO.findAll();
     }
 
+    @GetMapping("/randomwords/get")
+    public List<Word> getRandomWords() {
+        List <Word> randomWords = wordDAO.getRandomWords();
+        Collections.shuffle(randomWords);
+        return randomWords.subList(0, 5);
+    }
+
     @GetMapping("/words/getnotapproved")
     public List<Word> getWordsNotApproved() {
         List<Word> all = wordDAO.findAll();
@@ -377,4 +384,5 @@ public class WordController {
         }
         return Constants.WORD_SAVE_UNSUCCESS;
     }
+
 }
