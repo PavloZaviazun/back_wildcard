@@ -78,9 +78,11 @@ public class WordController {
         return pageHolder;
     }
 
-    @GetMapping("/lib/{name}/words/get/{shuffleFlag}")
+    //TODO it shouldn't be Post method
+    @PostMapping("/lib/{name}/words/get")
     public List<Word> getLibALLWords(@PathVariable String name,
-                                     @PathVariable boolean shuffleFlag) {
+                                     @RequestParam boolean shuffleFlag,
+                                     @RequestParam String[] wordsId) {
         Lib lib = libDAO.findLib(name);
         List<Integer> resultList = new QueryService(entityManager).selectWordsId(lib.getId());
         List<Word> list = new ArrayList<>();
@@ -89,8 +91,23 @@ public class WordController {
                 list.add(wordDAO.findById(el).get());
             }
         }
-        System.out.println(shuffleFlag);
-        if(shuffleFlag) Collections.shuffle(list);
+        if(shuffleFlag) {
+            Collections.shuffle(list);
+            return list;
+        }
+        if(wordsId.length > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                int idList = list.get(i).getId();
+                int idArr = Integer.parseInt(wordsId[i]);
+                if(idList != idArr) {
+                    List<Word> updList = new ArrayList <>(wordsId.length);
+                    for (String s : wordsId) {
+                        updList.add(getWord(Integer.parseInt(s)));
+                    }
+                    return updList;
+                }
+            }
+        }
         return list;
     }
 
