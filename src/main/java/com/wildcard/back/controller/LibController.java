@@ -1,5 +1,7 @@
 package com.wildcard.back.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wildcard.back.dao.LibDAO;
 import com.wildcard.back.models.Lib;
 import com.wildcard.back.service.QueryService;
@@ -62,7 +64,7 @@ public class LibController {
         libDAO.deleteById(id);
     }
 
-    @PatchMapping("/lib/{id}/update")
+    @PostMapping("/lib/{id}/update")
     public String updateLib(@PathVariable int id,
                           @RequestParam String name) {
         Lib libObj = libDAO.getOne(id);
