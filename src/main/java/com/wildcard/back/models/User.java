@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private boolean isEnabled = false;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private List <Role> roles = Arrays.asList(Role.ROLE_USER);
+    private List <Role> roles = new ArrayList<>();
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private Set <AuthToken> authTokens = new HashSet <>();

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -75,6 +76,7 @@ public class UserController {
             User user = userDAO.findById(id).get();
             if (user.isEnabled()) return Constants.USER_IS_ENABLED_ALREADY;
             user.setEnabled(true);
+            user.setRoles(Arrays.asList(Role.ROLE_USER));
             userDAO.save(user);
             return Constants.USER_IS_ENABLED;
         }
@@ -172,6 +174,7 @@ public class UserController {
 
     @GetMapping("/user/get")
     public User getUser(Principal principal) {
+        if (principal == null) return new User();
         return userDAO.findUserByUsername(principal.getName());
     }
 
