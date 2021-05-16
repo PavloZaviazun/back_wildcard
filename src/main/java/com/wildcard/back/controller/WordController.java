@@ -46,7 +46,7 @@ public class WordController {
     @GetMapping("/searchByLetter/{letter}/page/{page}")
     public Page<Word> searchByLetter(@PathVariable String letter,
                                      @PathVariable int page) {
-        return wordDAO.searchByLetter(letter, PageRequest.of(page, 20));
+        return wordDAO.searchByLetter(letter, PageRequest.of(page, 2));
     }
 
     @GetMapping("/partsOfSpeech/{word}")
@@ -74,7 +74,7 @@ public class WordController {
             }
         }
         PagedListHolder<Word> pageHolder = new PagedListHolder<>(list);
-        pageHolder.setPageSize(20);
+        pageHolder.setPageSize(3);
         pageHolder.setPage(page);
         return pageHolder;
     }

@@ -194,7 +194,7 @@ public class UserController {
 
     @GetMapping("/users/get/page/{page}")
     public Page<User> getUsers(@PathVariable int page) {
-        return userDAO.getUsersWP(PageRequest.of(page, 20));
+        return userDAO.getUsersWP(PageRequest.of(page, 2));
     }
 
     @PostMapping("/user/customlib/word/add")
@@ -325,7 +325,7 @@ public class UserController {
                     Word word = wordDAO.findById(wordId).get();
                     if(!isApproved) {
                         favWords.add(word);
-                    } else if(word.isApproved()) {
+                    } else if(!word.isApproved()) {
                         favWords.add(word);
                     }
                 } else {
