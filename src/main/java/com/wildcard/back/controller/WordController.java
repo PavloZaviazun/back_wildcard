@@ -323,11 +323,14 @@ public class WordController {
         return randomWords.subList(0, 5);
     }
 
-    @GetMapping("/words/getnotapproved")
-    public List<Word> getWordsNotApproved() {
+    @GetMapping("/words/getnotapproved/page/{page}")
+    public PagedListHolder<Word> getWordsNotApproved(@PathVariable int page) {
         List<Word> all = wordDAO.findAll();
         List<Word> collect = all.stream().filter(a -> !a.isApproved()).collect(Collectors.toList());
-        return collect;
+        PagedListHolder<Word> pageHolder = new PagedListHolder<>(collect);
+        pageHolder.setPageSize(3);
+        pageHolder.setPage(page);
+        return pageHolder;
     }
 
     @PostMapping("/lib/{idLib}/add")
