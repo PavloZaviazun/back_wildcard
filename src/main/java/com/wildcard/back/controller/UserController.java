@@ -7,6 +7,7 @@ import com.wildcard.back.models.*;
 import com.wildcard.back.service.MailService;
 import com.wildcard.back.util.*;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -306,8 +307,10 @@ public class UserController {
         return Constants.WORD_NOT_DELETED_FROM_FAV;
     }
 
-    @GetMapping("/user/customlib/get")
-    public List<Word> getUserCustomLib(Principal principal) {
+    @GetMapping("/user/customlib/get/approved/{isApproved}/page/{page}")
+    public PagedListHolder<Word> getUserCustomLib(Principal principal,
+                                                  @PathVariable int page,
+                                                  @PathVariable boolean isApproved) {
         int userId = userDAO.findUserByUsername(principal.getName()).getId();
         CustomLib customLib = customLibDAO.findByUserId(userId);
         ObjectMapper obj = new ObjectMapper();
@@ -319,7 +322,12 @@ public class UserController {
             for (int a = 0; a < listOfWords.size(); a++) {
                 int wordId = listOfWords.get(a);
                 if (wordDAO.findById(wordId).isPresent()) {
-                    favWords.add(wordDAO.findById(wordId).get());
+                    Word word = wordDAO.findById(wordId).get();
+                    if(!isApproved) {
+                        favWords.add(word);
+                    } else if(word.isApproved()) {
+                        favWords.add(word);
+                    }
                 } else {
                     newListOfWords.remove(Integer.valueOf(wordId));
                 }
@@ -330,7 +338,10 @@ public class UserController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return favWords;
+        PagedListHolder<Word> pageHolder = new PagedListHolder<>(favWords);
+        pageHolder.setPageSize(3);
+        pageHolder.setPage(page);
+        return pageHolder;
     }
 
     @GetMapping("/user/customlibids/get")
