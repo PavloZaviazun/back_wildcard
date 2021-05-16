@@ -325,7 +325,7 @@ public class UserController {
                     Word word = wordDAO.findById(wordId).get();
                     if(!isApproved) {
                         favWords.add(word);
-                    } else if(word.isApproved()) {
+                    } else if(!word.isApproved()) {
                         favWords.add(word);
                     }
                 } else {
