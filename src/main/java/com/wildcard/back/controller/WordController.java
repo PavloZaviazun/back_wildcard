@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -78,11 +79,9 @@ public class WordController {
         return pageHolder;
     }
 
-    //TODO it shouldn't be Post method
-    @PostMapping("/lib/{name}/words/get")
+    @GetMapping("/lib/{name}/words/get/{shuffleFlag}")
     public List<Word> getLibALLWords(@PathVariable String name,
-                                     @RequestParam boolean shuffleFlag,
-                                     @RequestParam String[] wordsId) {
+                                     @PathVariable int shuffleFlag) {
         Lib lib = libDAO.findLib(name);
         List<Integer> resultList = new QueryService(entityManager).selectWordsId(lib.getId());
         List<Word> list = new ArrayList<>();
@@ -91,22 +90,9 @@ public class WordController {
                 list.add(wordDAO.findById(el).get());
             }
         }
-        if(shuffleFlag) {
-            Collections.shuffle(list);
+        if(shuffleFlag > 0) {
+            Collections.shuffle(list, new Random(shuffleFlag));
             return list;
-        }
-        if(wordsId.length > 0) {
-            for (int i = 0; i < list.size(); i++) {
-                int idList = list.get(i).getId();
-                int idArr = Integer.parseInt(wordsId[i]);
-                if(idList != idArr) {
-                    List<Word> updList = new ArrayList <>(wordsId.length);
-                    for (String s : wordsId) {
-                        updList.add(getWord(Integer.parseInt(s)));
-                    }
-                    return updList;
-                }
-            }
         }
         return list;
     }
@@ -330,10 +316,10 @@ public class WordController {
         return wordDAO.findAll();
     }
 
-    @GetMapping("/randomwords/get")
-    public List<Word> getRandomWords() {
+    @GetMapping("/mode/random/get/{shuffleFlag}")
+    public List<Word> getRandomWords(@PathVariable int shuffleFlag) {
         List <Word> randomWords = wordDAO.getRandomWords();
-        Collections.shuffle(randomWords);
+        Collections.shuffle(randomWords, new Random(shuffleFlag));
         return randomWords.subList(0, 5);
     }
 
