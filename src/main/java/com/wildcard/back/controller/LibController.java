@@ -89,7 +89,7 @@ public class LibController {
 
     @GetMapping("/libs/get/page/{page}")
     public Page <Lib> getLibsWP(@PathVariable int page) {
-        return libDAO.getLibsWP(PageRequest.of(page, 20));
+        return libDAO.getLibsWP(PageRequest.of(page, 3));
     }
 
 }
